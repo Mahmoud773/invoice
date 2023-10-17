@@ -4,8 +4,7 @@ import 'dart:io';
 import 'home_screen.dart';
 import 'package:excel/excel.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xcell;
-import 'package:path_provider/path_provider.dart';
-// import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';import 'package:open_file/open_file.dart';
 
 import 'package:path/path.dart' as pathP;
 import 'package:sqflite/sqflite.dart' as sql;
@@ -48,7 +47,7 @@ class _AddFatoraScreenState extends State<AddFatoraScreen> {
   final File file = File(fileName);
 
   await file.writeAsBytes(bytes, flush: true);
-  // OpenFile.open(fileName);
+  OpenFile.open(fileName);
 
   final appDir = await getApplicationDocumentsDirectory();
   final myFileName= pathP.basename(file.path);
