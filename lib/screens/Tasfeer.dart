@@ -70,7 +70,7 @@ class _TasfeerState extends State<Tasfeer> {
           }) );
         },),
         backgroundColor: Colors.green,
-        title: Text('تصفير الجرد'  , style: TextStyle(color: Colors.white , fontSize: 30),),
+        title: Text('تصفير الفواتير'  , style: TextStyle(color: Colors.white , fontSize: 30),),
         centerTitle: true,
       ),
       body: Padding(
