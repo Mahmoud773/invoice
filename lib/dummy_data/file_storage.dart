@@ -46,8 +46,8 @@ class FileStorage {
     print("Save file");
 
     // Write the data in the file you have created
-
     return file.writeAsString(bytes);
+
   }
 
   static Future<File> writeString(List<int> bytes,String name) async {

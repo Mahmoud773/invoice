@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:invoice/screens/grid_page.dart';
 import 'package:invoice/screens/home_screen.dart';
 import 'package:invoice/shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,7 +37,9 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen( sharedPreferences: _sharedPreferences,billLList: []),
+      home:
+       GridPage(sharedPreferences: _sharedPreferences)
+       // HomeScreen( sharedPreferences: _sharedPreferences,billLList: []),
     );
   }
 }
