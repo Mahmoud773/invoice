@@ -125,7 +125,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
       billTextModel=BillTextModel(
           billType: _enteredBillType,
           billNumber: _enteredBillNumber,
-           serialMap:itemsList, branchNumber: _enteredBranchNumber);
+           serialMap:sanfList1, branchNumber: _enteredBranchNumber);
       myBills.add(billTextModel!);
       myBills.forEach((element) {
         element.serialMap.forEach((item){
@@ -143,18 +143,45 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
 
         for(var i=0 ;i<myBills.length;i++){
           bufferList.insert(i, StringBuffer());
+          List sanfList=[];
           element.serialMap.forEach((item) {
-            bufferList[i].write(item.contains('sanf') ?'${item.substring(5)},' : '$item,');
+            // if(item.contains('sanf')){
+            //   sanfList.add(item);
+            // }
+            //
+            // print('sanfList $sanfList');
+            //         sanfList.forEach((sanf) {
+            //           if((sanf.toString() != item.toString()) ){
+            //             bool x=(sanf.trim() == item.trim());
+            //             print(x);
+            //             bufferList[i].write('${element!.branchNumber},${element.billType.toString()},'
+            //                 '${element!.billNumber},$sanf, $item \n');
+            //
+            //           }
+            //         }) ;
+            //
+            //         for(var x=0; x<element.serialMap.length;x++){
+            //
+            //         }
+            if(item.contains('sanf')==false){
+              bufferList[i].write('${element!.branchNumber},${element.billType.toString()},'
+                  '${element!.billNumber}, $item \n');
+            }
+
+            // bufferList[i].write(item.contains('sanf') ?'${item.substring(5)},' : '$item,');
             // bufferList[i].write('$item,');
           });
         }
+
 
         // concatenateMybillsList.write('Bill Type : ${element.billType.toString()}  \n'
         //     'Bill Number: ${element!.billNumber} \n '
         //     'Branch Number : ${element!.branchNumber} \n'
         //     'Serials : ${element.serialMap.toString()} \n' )  ;
-        concatenateMybillsList.write('${element!.branchNumber},${element.billType.toString()},'
-            '${element!.billNumber}, ${bufferList[myBills.indexOf(element)]} \n');
+        // concatenateMybillsList.write('$bufferList');
+        concatenateMybillsList.write('${bufferList[myBills.indexOf(element)]} \n');
+        // concatenateMybillsList.write('${element!.branchNumber},${element.billType.toString()},'
+        //     '${element!.billNumber}, ${bufferList[myBills.indexOf(element)]} \n');
         newContent=concatenateMybillsList.toString() ;
       });
       save();
@@ -239,6 +266,8 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
   void refresh() {
     setState(() {});
   }
+
+  List<String>   sanfList1=[];
 
   Map<String,int> sanfMap={};
   
@@ -368,6 +397,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                     child: Directionality(
                       textDirection: TextDirection.rtl,
                       child: TextFormField(
+                        textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderSide:
@@ -418,6 +448,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                     child: Directionality(
                       textDirection: TextDirection.rtl,
                       child: TextFormField(
+                        textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderSide:
@@ -479,6 +510,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                                child: Directionality(
                                                  textDirection: TextDirection.rtl,
                                                  child: TextFormField(
+                                                   textInputAction: TextInputAction.next,
                                                    decoration: InputDecoration(
                                                      focusedBorder: OutlineInputBorder(
                                                        borderSide:
@@ -487,7 +519,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                                      ),
                                                      filled: true,
                                                      alignLabelWithHint: false,
-                                                     label: Text('اسم الصنف',
+                                                     label: Text('كود الصنف',
                                                        style: TextStyle(fontWeight: FontWeight.bold ,color:
                                                        Colors.black), textAlign: TextAlign.right,),
                                                      fillColor: Colors.black.withOpacity(0.1),
@@ -502,11 +534,13 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                                        {
                                                          sanfName=value;
                                                          itemsList.add('sanf $value');
+                                                         sanfList1.add('sanf, $value');
 
                                                          // if(itemsList.isNotEmpty){
+                                                         //
                                                          // }
                                                          // if(itemsList.isEmpty){
-                                                         //   itemsList.insert(0 , 'sanf$value');
+                                                         //   itemsList.insert(0 , 'sanf0 $value');
                                                          // }
                                                        }
 
@@ -527,6 +561,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                                      child: Directionality(
                                                        textDirection: TextDirection.rtl,
                                                        child: TextFormField(
+                                                         textInputAction: TextInputAction.next,
                                                          decoration: InputDecoration(
                                                            focusedBorder: OutlineInputBorder(
                                                              borderSide:
@@ -567,6 +602,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                                            child: Directionality(
                                                              textDirection: TextDirection.rtl,
                                                              child: TextFormField(
+                                                               textInputAction: TextInputAction.done,
                                                                focusNode: focusListDialog[noOfSerials1-1],
                                                                decoration: InputDecoration(
                                                                  focusedBorder: OutlineInputBorder(
@@ -595,7 +631,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                                                ,
                                                                onSaved: (value){
                                                                  itemsList.add('$value');
-
+                                                                 sanfList1.add('$sanfName, $value');
                                                                  // if(value!.isNotEmpty && value!.length>0)
                                                                  //   itemsList.add(value!);
 
@@ -619,6 +655,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                                          child: Directionality(
                                                            textDirection: TextDirection.rtl,
                                                            child: TextFormField(
+                                                             textInputAction: TextInputAction.next,
                                                              focusNode: focusListDialog[index],
                                                              decoration: InputDecoration(
                                                                focusedBorder: OutlineInputBorder(
@@ -647,7 +684,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                                              ,
                                                              onSaved: (value){
                                                                itemsList.add('$value');
-
+                                                               sanfList1.add('$sanfName, $value');
                                                                // if(value!.isNotEmpty && value!.length>0)
                                                                // itemsList.add(value!);
 
@@ -712,7 +749,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                       }
                       if(index == itemsList.length-1){
                         return Container(
-                          key:Key('${itemsList[index]}'),
+                          key:ValueKey('${itemsList[index]}'),
                           margin: EdgeInsets.all(5),
                           width: width*80/100,
                           child: Directionality(
@@ -724,8 +761,11 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                 Container(
                                   width: width*60/100,
                                   child: TextFormField(
-                                    initialValue:itemsList[index].contains('sanf') ? itemsList[index].substring(5):
-                                    itemsList[index] ,
+                                    textInputAction: TextInputAction.next,
+                                    initialValue:itemsList[index].contains('sanf') ?
+                                    itemsList[index].substring(5):
+                                    itemsList[index],
+
                                     decoration: InputDecoration(
 
                                       focusedBorder: OutlineInputBorder(
@@ -735,7 +775,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                       ),
                                       filled: true,
                                       alignLabelWithHint: false,
-                                      label: Text((itemsList[index].startsWith('sanf'))?'اسم الصنف':'سيريال ',
+                                      label: Text((itemsList[index].startsWith('sanf'))?'كود الصنف':'سيريال ',
                                         style: TextStyle(fontWeight: FontWeight.bold ,
                                             color:itemsList[index].startsWith('sanf') ? Colors.black:
                                             Colors.black), textAlign: TextAlign.right,),
@@ -750,6 +790,8 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                     focusNode: focusList[itemsList.length-1],
                                     onChanged: (value){
                                       if(value!.isNotEmpty && value.length>0){
+                                        var x=sanfList1[index].substring(0 , sanfList1[index].indexOf(',')+1);
+                                        sanfList1[index]= '$x $value';
                                         if(itemsList[index].contains("sanf")){
                                           itemsList[index]="sanf ${value}";
                                         }
@@ -762,7 +804,10 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                         FocusScope.of(context).unfocus();
                                     },
                                     onSaved: (v){
+
                                       if(v!.isNotEmpty && v.length>0){
+                                        var x=sanfList1[index].substring(0 , sanfList1[index].indexOf(',')+1);
+                                        sanfList1[index]= '$x $v';
                                         if(itemsList[index].contains("sanf")){
                                           itemsList[index]="sanf ${v}";
                                         }if(!itemsList[index].contains("sanf")){
@@ -789,6 +834,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                     //   });
                                     // }
                                       itemsList.removeAt(index);
+                                      sanfList1.removeAt(index);
                                       setState(() {
 
                                       });
@@ -803,7 +849,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                         );
                       }
                       return Container(
-                        key:Key('${itemsList[index]}'),
+                        key:ValueKey('${itemsList[index]}'),
                         margin: EdgeInsets.all(5),
                         width: width*80/100,
                         child: Directionality(
@@ -815,9 +861,10 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                               Container(
                                 width:width*60/100,
                                 child: TextFormField(
-
-                                  initialValue:itemsList[index].contains('sanf') ? itemsList[index].substring(5):
-                                  itemsList[index] ,
+                                  textInputAction: TextInputAction.next,
+                                  initialValue:itemsList[index].contains('sanf') ?
+                                  itemsList[index].substring(5):
+                                  itemsList[index],
                                   decoration: InputDecoration(
 
                                     focusedBorder: OutlineInputBorder(
@@ -827,7 +874,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                     ),
                                     filled: true,
                                     alignLabelWithHint: false,
-                                    label: Text((itemsList[index].startsWith('sanf'))?'اسم الصنف':'سيريال ',
+                                    label: Text((itemsList[index].startsWith('sanf'))?'كود الصنف':'سيريال ',
                                       style: TextStyle(fontWeight: FontWeight.bold ,
                                           color:itemsList[index].startsWith('sanf') ? Colors.black:
                                       Colors.black), textAlign: TextAlign.right,),
@@ -842,6 +889,8 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                   focusNode: focusList[index],
                                   onChanged: (value){
                                     if(value!.isNotEmpty && value.length>0){
+                                      var x=sanfList1[index].substring(0 , sanfList1[index].indexOf(',')+1);
+                                      sanfList1[index]= '$x $value';
                                       if(itemsList[index].contains("sanf")){
                                         itemsList[index]="sanf ${value}";
                                       }
@@ -859,6 +908,8 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                   },
                                   onSaved: (v){
                                     if(v!.isNotEmpty && v.length>0){
+                                      var x=sanfList1[index].substring(0 , sanfList1[index].indexOf(',')+1);
+                                      sanfList1[index]= '$x $v';
                                       if(itemsList[index].contains("sanf")){
                                         itemsList[index]="sanf ${v}";
                                       }if(!itemsList[index].contains("sanf")){
@@ -886,6 +937,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                   if(itemsList[index].contains('sanf')==false){
                                     print('index$index');
                                     itemsList.removeAt(index);
+                                    sanfList1.removeAt(index);
                                      setState(() {
 
                                      });

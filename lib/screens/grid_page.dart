@@ -31,6 +31,7 @@ class _GridPageState extends State<GridPage> {
       onWillPop:_onWillPop ,
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: Colors.green,
           actions: [
           Padding(

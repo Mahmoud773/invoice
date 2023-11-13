@@ -5,6 +5,8 @@ import 'dart:io';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'grid_page.dart';
+
 
  class TasdeerOrImport extends StatefulWidget {
    SharedPreferences? sharedPreferences;
@@ -47,6 +49,18 @@ import 'package:shared_preferences/shared_preferences.dart';
    @override
    Widget build(BuildContext context) {
      return  Scaffold(
+       appBar: AppBar(
+         leading:IconButton(onPressed: (){
+           Navigator.pushReplacement(context, MaterialPageRoute(builder:(context){
+             return GridPage(sharedPreferences: widget.sharedPreferences,);
+           }));
+         }, icon:
+         Icon(Icons.arrow_back , color: Colors.white,)
+         ),
+         title: Text('فتح الملف' , style: TextStyle(color: Colors.white),),
+         centerTitle: true,
+         backgroundColor: Colors.green,
+       ),
        backgroundColor: Colors.green[100],
        body: Center(
          child: MaterialButton(

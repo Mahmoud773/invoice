@@ -89,10 +89,40 @@ class _HomeScreenState extends State<HomeScreen> {
       //       'Serials : ${element.serialMap.toString()} \n' )  ;
       //   newContent=concatenateMybillsList.toString() ;
       // });
+      // myBills.forEach((element) {
+      //   element.serialMap.forEach((item){
+      //     concatenateSerialList.write('\n${ item.contains('Item') ?'Item name ${item.substring(6)}' :
+      //     'serial ${element!.serialMap.indexOf(item)+1} : $item \n'}  ');
+      //     // 'serial ${billTextModel2!.serialMap.indexOf(item)+1} : $item \n');
+      //   });
+      //   var list = ['one', 'two', 'three'];
+      //   var concatenate = StringBuffer();
+      //   list.forEach((item){
+      //     concatenate.write(item);
+      //   });
+      //
+      //   List<StringBuffer> bufferList=[];
+      //
+      //   for(var i=0 ;i<myBills.length;i++){
+      //     bufferList.insert(i, StringBuffer());
+      //     element.serialMap.forEach((item) {
+      //       bufferList[i].write(item.contains('sanf') ?'${item.substring(5)},' : '$item,');
+      //       // bufferList[i].write('$item,');
+      //     });
+      //   }
+      //
+      //   // concatenateMybillsList.write('Bill Type : ${element.billType.toString()}  \n'
+      //   //     'Bill Number: ${element!.billNumber} \n '
+      //   //     'Branch Number : ${element!.branchNumber} \n'
+      //   //     'Serials : ${element.serialMap.toString()} \n' )  ;
+      //   concatenateMybillsList.write('${element!.branchNumber},${element.billType.toString()},'
+      //       '${element!.billNumber}, ${bufferList[myBills.indexOf(element)]} \n');
+      //   newContent=concatenateMybillsList.toString() ;
+      // });
       myBills.forEach((element) {
         element.serialMap.forEach((item){
           concatenateSerialList.write('\n${ item.contains('Item') ?'Item name ${item.substring(6)}' :
-          'serial ${element!.serialMap.indexOf(item)+1} : $item \n'}  ');
+          'serial ${element!.serialMap.indexOf(item)+1} : $item \n'}');
           // 'serial ${billTextModel2!.serialMap.indexOf(item)+1} : $item \n');
         });
         var list = ['one', 'two', 'three'];
@@ -105,18 +135,45 @@ class _HomeScreenState extends State<HomeScreen> {
 
         for(var i=0 ;i<myBills.length;i++){
           bufferList.insert(i, StringBuffer());
+          List sanfList=[];
           element.serialMap.forEach((item) {
-            bufferList[i].write(item.contains('sanf') ?'${item.substring(5)},' : '$item,');
+            // if(item.contains('sanf')){
+            //   sanfList.add(item);
+            // }
+            //
+            // print('sanfList $sanfList');
+            //         sanfList.forEach((sanf) {
+            //           if((sanf.toString() != item.toString()) ){
+            //             bool x=(sanf.trim() == item.trim());
+            //             print(x);
+            //             bufferList[i].write('${element!.branchNumber},${element.billType.toString()},'
+            //                 '${element!.billNumber},$sanf, $item \n');
+            //
+            //           }
+            //         }) ;
+            //
+            //         for(var x=0; x<element.serialMap.length;x++){
+            //
+            //         }
+            if(item.contains('sanf')==false){
+              bufferList[i].write('${element!.branchNumber},${element.billType.toString()},'
+                  '${element!.billNumber}, $item \n');
+            }
+
+            // bufferList[i].write(item.contains('sanf') ?'${item.substring(5)},' : '$item,');
             // bufferList[i].write('$item,');
           });
         }
+
 
         // concatenateMybillsList.write('Bill Type : ${element.billType.toString()}  \n'
         //     'Bill Number: ${element!.billNumber} \n '
         //     'Branch Number : ${element!.branchNumber} \n'
         //     'Serials : ${element.serialMap.toString()} \n' )  ;
-        concatenateMybillsList.write('${element!.branchNumber},${element.billType.toString()},'
-            '${element!.billNumber}, ${bufferList[myBills.indexOf(element)]} \n');
+        // concatenateMybillsList.write('$bufferList');
+        concatenateMybillsList.write('${bufferList[myBills.indexOf(element)]} \n');
+        // concatenateMybillsList.write('${element!.branchNumber},${element.billType.toString()},'
+        //     '${element!.billNumber}, ${bufferList[myBills.indexOf(element)]} \n');
         newContent=concatenateMybillsList.toString() ;
       });
       FileStorage.writeCounter(
@@ -199,7 +256,13 @@ class _HomeScreenState extends State<HomeScreen> {
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
-           automaticallyImplyLeading:false,
+           leading:IconButton(onPressed: (){
+             Navigator.pushReplacement(context, MaterialPageRoute(builder:(context){
+               return GridPage(sharedPreferences: widget.sharedPreferences,);
+             }));
+           }, icon:
+           Icon(Icons.arrow_back , color: Colors.white,)
+           ),
           title: Text('الفواتير' , style: TextStyle(color: Colors.white),),
           centerTitle: true,
           backgroundColor: Colors.green,
@@ -257,7 +320,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                                   return EditFatoraWithItems( sharedPreferences: widget.sharedPreferences,
                                     billTextModel: myBills[index] , currentIndex: index,
-                                  numberOfSerials:myBills[index].serialMap.length ,);
+                                  numberOfSerials:myBills[index].serialMap.length ,serialList:
+                                    myBills[index].serialMap,
+                                  );
                                 }));
 
                               }, icon: Icon(Icons.edit , color: Colors.white,)),
