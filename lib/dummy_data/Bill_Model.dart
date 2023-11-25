@@ -9,12 +9,14 @@ class BillTextModel {
   int billType;
   String billNumber;
   List<String> serialMap;
+  String? path;
 
   BillTextModel({
     required this.branchNumber,
     required this.billType,
     required this.billNumber,
     required this.serialMap,
+    this.path,
   });
 
   factory BillTextModel.fromJson(Map<String, dynamic> json) => BillTextModel(
@@ -22,6 +24,7 @@ class BillTextModel {
     billType: json["billType"],
     billNumber: json["billNumber"],
     serialMap: List<String>.from(json["serialMap"].map((x) => x)),
+    path: json["path"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -29,5 +32,6 @@ class BillTextModel {
     "billType": billType,
     "billNumber": billNumber,
     "serialMap": List<dynamic>.from(serialMap.map((x) => x)),
+    "path":path
   };
 }

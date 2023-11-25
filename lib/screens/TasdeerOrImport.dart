@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:open_file/open_file.dart';
@@ -5,6 +7,7 @@ import 'dart:io';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../dummy_data/Bill_Model.dart';
 import 'grid_page.dart';
 
 
@@ -17,7 +20,7 @@ import 'grid_page.dart';
  }
 
  class _TasdeerOrImportState extends State<TasdeerOrImport> {
-
+   List<BillTextModel>  myBills= List.empty(growable:true );
    void _pickFile() async {
      // opens storage to pick files and the picked file or files
      // are assigned into result and if no file is chosen result is null.
@@ -33,12 +36,25 @@ import 'grid_page.dart';
      print(result.files.first.size);
      print(result.files.first.path);
    }
+   void read() {
+
+     List<String>? myBillsStringList = widget.sharedPreferences!.getStringList('myBills');
+
+     if(myBillsStringList!=null)
+     {
+       myBills =myBillsStringList.map((billString) => BillTextModel.fromJson(
+           json.decode(billString))).toList();
+     }
+
+
+   }
    var path='';
 
    @override
   void initState() {
      path= widget.sharedPreferences!.get('lastPath').toString();
     super.initState();
+     read();
   }
 
    void _openFile(path) {
@@ -48,6 +64,7 @@ import 'grid_page.dart';
 
    @override
    Widget build(BuildContext context) {
+     print(myBills);
      return  Scaffold(
        appBar: AppBar(
          leading:IconButton(onPressed: (){
@@ -63,15 +80,24 @@ import 'grid_page.dart';
        ),
        backgroundColor: Colors.green[100],
        body: Center(
-         child: MaterialButton(
-           onPressed: (){
-             _openFile(path);
+         child: SingleChildScrollView(
+
+           child: Column(
+             mainAxisSize: MainAxisSize.max,
+             mainAxisAlignment: MainAxisAlignment.center,
+             children: List.generate( myBills.length, (index) {
+               return MaterialButton(
+               onPressed: (){
+           _openFile(myBills[index].path);
            },
            child: Text(
-             'استيراد وفتح الملف',
-             style: TextStyle(color: Colors.white),
+           'فتح ملف الفاتورة باسم ${myBills[index].billNumber}',
+           style: TextStyle(color: Colors.white , fontSize: 20),
            ),
            color: Colors.green,
+           );
+           }),
+           ),
          ),
        ),);
 

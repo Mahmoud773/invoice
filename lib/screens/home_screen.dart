@@ -332,13 +332,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                    return AlertDialog(
                                      actions: [
                                        TextButton(onPressed:(){
+                                         FileStorage.deleteFile('${myBills[index].path}');
+
                                          myBills.removeAt(index);
                                          save();
-                                         // FileStorage.deleteFile('${myBills[index].path}');
-                                         _createTextFile2();
+                                         Navigator.of(context).pop();
+                                         // _createTextFile2();
 
                                          // print('${myBills[index].fileName}');
-                                         Navigator.of(context).pop();
+
                                          setState(() {
 
                                          });

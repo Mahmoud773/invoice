@@ -126,12 +126,12 @@ class _TasfeerState extends State<Tasfeer> {
                         return AlertDialog(
                           actions: [
                             TextButton(onPressed:(){
-                              // // for(var i=0 ; i<myBills.length;i++)
-                              //   myBills.forEach((element) {
-                              //     FileStorage.deleteFile('${element.path}');
-                              //   });
+                               for(var i=0 ; i<myBills.length;i++)
+                                myBills.forEach((element) {
+                                  FileStorage.deleteFile('${element.path}');
+                                });
                               myBills.clear();
-                                _createTextFile2();
+                                // _createTextFile2();
                               save();
                               read();
                               ScaffoldMessenger.of(context).showSnackBar(SnackBar(

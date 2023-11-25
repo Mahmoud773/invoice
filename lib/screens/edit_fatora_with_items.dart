@@ -1,5 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:invoice/dummy_data/Bill_Model.dart';
 import 'package:invoice/screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,8 +15,9 @@ class EditFatoraWithItems extends StatefulWidget {
   final int currentIndex;
   int numberOfSerials;
   List<String> serialList;
+  bool comeFromEditwithoutEdit;
   EditFatoraWithItems({this.sharedPreferences ,required this.billTextModel ,required
-  this.currentIndex ,  this.numberOfSerials=0 , required this.serialList});
+  this.currentIndex ,  this.numberOfSerials=0 , required this.serialList , this.comeFromEditwithoutEdit=false});
 
   @override
   State<EditFatoraWithItems> createState() => _EditFatoraWithItemsState();
@@ -60,6 +63,7 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
   void initState() {
     super.initState();
     read();
+    widget.sharedPreferences!.setStringList('editList', widget.billTextModel.serialMap);
 
   }
 
@@ -101,204 +105,33 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
         billNumber: billTextModel.billNumber
         , serialMap:billTextModel.serialMap,
         branchNumber: billTextModel.branchNumber);
-    // myBills.forEach((element) {
-    //   element.serialMap.forEach((item){
-    //     concatenateSerialList.write('\n${ item.contains('Item') ?'Item name ${item.substring(6)}' :
-    //     'serial ${element!.serialMap.indexOf(item)+1} : $item \n'}  ');
-    //     // 'serial ${billTextModel2!.serialMap.indexOf(item)+1} : $item \n');
-    //   });
-    //   concatenateMybillsList.write('Bill Type : ${element.billType.toString()}  \n'
-    //       'Bill Number: ${element!.billNumber} \n '
-    //       'Branch Number : ${element!.branchNumber} \n'
-    //       'Serials : ${element.serialMap.toString()} \n' )  ;
-    //   newContent=concatenateMybillsList.toString() ;
-    // });
-    // myBills.forEach((element) {
-    //
-    //   element.serialMap.forEach((item){
-    //
-    //     Map<int,String> sanfMap={};
-    //     for (var x=0;x<element.serialMap.length ;x++){
-    //        if(element.serialMap[x].contains('sanf')){
-    //          sanfMap[x]=element.serialMap[x];
-    //        }
-    //     }
-    //     concatenateSerialList.write('\n${ item.contains('Item') ?'Item name ${item.substring(6)}' :
-    //     'serial ${element!.serialMap.indexOf(item)+1} : $item \n'}  ');
-    //     // 'serial ${billTextModel2!.serialMap.indexOf(item)+1} : $item \n');
-    //   });
-    //   var list = ['one', 'two', 'three'];
-    //   var concatenate = StringBuffer();
-    //   list.forEach((item){
-    //     concatenate.write(item);
-    //   });
-    //
-    //   List<StringBuffer> bufferList=[];
-    //
-    //   for(var i=0 ;i<myBills.length;i++){
-    //     bufferList.insert(i, StringBuffer());
-    //     element.serialMap.forEach((item) {
-    //
-    //       bufferList[i].write(item.contains('sanf') ?'${item.substring(5)},' : '$item,');
-    //     });
-    //   }
-    //
-    //   // concatenateMybillsList.write('Bill Type : ${element.billType.toString()}  \n'
-    //   //     'Bill Number: ${element!.billNumber} \n '
-    //   //     'Branch Number : ${element!.branchNumber} \n'
-    //   //     'Serials : ${element.serialMap.toString()} \n' )  ;
-    //   concatenateMybillsList.write('${element!.branchNumber},${element.billType.toString()},'
-    //       '${element!.billNumber}, ${bufferList[myBills.indexOf(element)]} \n');
-    //   newContent=concatenateMybillsList.toString() ;
-    // });
-    // myBills.forEach((element) {
-    //   Map<String,int> sanfMapList= {};
-    //   List<int>  sanfNumbers=[];
-    //   List<String> sanfNames=[];
-    //   List<int> serialsNumbers=[];
-    //   var list = ['one', 'two', 'three'];
-    //   var concatenate = StringBuffer();
-    //
-    //   List<StringBuffer> bufferList=[];
-    //   List<List<String>> listmm=[];
-    //   for(var y=0; y<element.serialMap.length; y++){
-    //
-    //     if(element.serialMap[y].contains('sanf')==false){
-    //       serialsNumbers.add(y);
-    //       // sanfMapList.add({element.serialMap[y].toString() ,y} as Map<String, int>);
-    //     }
-    //     if(element.serialMap[y].contains('sanf')){
-    //       sanfNames.add(element.serialMap[y]);
-    //       sanfNumbers.add(y);
-    //     }
-    //     element.serialMap.forEach((item) {
-    //       if(item.contains('sanf')){
-    //         sanfMapList['sanf $item']= element.serialMap.indexOf(item);
-    //       }
-    //       if(item.contains('sanf')==false){
-    //         sanfMapList[item]= element.serialMap.indexOf(item);
-    //       }
-    //     });
-    //
-    //
-    //     print('sanfNumbers $sanfNumbers');
-    //     print('sanfNames $sanfNames');
-    //     print('serialsNumbers $serialsNumbers');
-    //
-    //   }
-    //   for(var i=0 ;i<myBills.length;i++){
-    //     bufferList.insert(i, StringBuffer());
-    //     for(var t=0;t<serialsNumbers.length ; t++){
-    //       for(var c =0; c<sanfNumbers.length ; c++){
-    //         print(sanfNumbers.asMap().containsKey(c+1));
-    //         if(sanfNumbers.asMap().containsKey(c+1)){
-    //           // if(serialsNumbers[t] >sanfNumbers[c] && serialsNumbers[t]< sanfNumbers[c+1]  )
-    //           bufferList[i].write('${element!.branchNumber},${element.billType.toString()},'
-    //               '${element!.billNumber},${sanfNames[c]}, ${element.serialMap[serialsNumbers[t]]}, \n');
-    //         }
-    //
-    //         // listc.insert(c, element.serialMap.getRange(c, (sanfNumbers[])).toList())
-    //       }
-    //       // bufferList[i].write('${element!.branchNumber},${element.billType.toString()},'
-    //       //     '${element!.billNumber},${sanfNames[c]}, ${element.serialMap[serialsNumbers[t]]}, \n');
-    //
-    //     }
-    //
-    //     element.serialMap.forEach((item) {
-    //
-    //
-    //       List<List<String>> listc=[] ;
-    //       // List<String> firstSerial= element.serialMap.getRange(start, end).toList();
-    //
-    //       //
-    //       // for(var x=0; x <= sanfNumbers.length; x++){
-    //       //   var ind =element.serialMap.indexOf(item);
-    //       //   if(ind >0 && ind<sanfNumbers[x+1] ){
-    //       //     bufferList[i].write('${element!.branchNumber},${element.billType.toString()},'
-    //       //         '${element!.billNumber},${sanfNames[x]} $item, \n');
-    //       //   }
-    //       // }
-    //
-    //       // if(item.contains('sanf')==false){
-    //       //   bufferList[i].write('${element!.branchNumber},${element.billType.toString()},'
-    //       //       '${element!.billNumber}, $item \n');
-    //       // }
-    //
-    //       // bufferList[i].write(item.contains('sanf') ?'${item.substring(5)},' : '$item,');
-    //       // bufferList[i].write('$item,');
-    //     });
-    //   }
-    //
-    //
-    //
-    //   concatenateMybillsList.write('${bufferList[myBills.indexOf(element)]} \n');
-    //   // concatenateMybillsList.write('${element!.branchNumber},${element.billType.toString()},'
-    //   //     '${element!.billNumber}, ${bufferList[myBills.indexOf(element)]} \n');
-    //   newContent=concatenateMybillsList.toString() ;
-    // });
 
-    myBills.forEach((element) {
-      element.serialMap.forEach((item){
-        concatenateSerialList.write('\n${ item.contains('Item') ?'Item name ${item.substring(6)}' :
-        'serial ${element!.serialMap.indexOf(item)+1} : $item \n'}');
-        // 'serial ${billTextModel2!.serialMap.indexOf(item)+1} : $item \n');
-      });
-      var list = ['one', 'two', 'three'];
-      var concatenate = StringBuffer();
-      list.forEach((item){
-        concatenate.write(item);
-      });
 
-      List<StringBuffer> bufferList=[];
+    List<StringBuffer> bufferList=[];
+    for(var i=0;i<billTextModel!.serialMap.length;i++){
+      bufferList.insert(i, StringBuffer());
 
-      for(var i=0 ;i<myBills.length;i++){
-        bufferList.insert(i, StringBuffer());
-        List sanfList=[];
-        element.serialMap.forEach((item) {
-          // if(item.contains('sanf')){
-          //   sanfList.add(item);
-          // }
-          //
-          // print('sanfList $sanfList');
-          //         sanfList.forEach((sanf) {
-          //           if((sanf.toString() != item.toString()) ){
-          //             bool x=(sanf.trim() == item.trim());
-          //             print(x);
-          //             bufferList[i].write('${element!.branchNumber},${element.billType.toString()},'
-          //                 '${element!.billNumber},$sanf, $item \n');
-          //
-          //           }
-          //         }) ;
-          //
-          //         for(var x=0; x<element.serialMap.length;x++){
-          //
-          //         }
-          if(item.contains('sanf')==false){
-            bufferList[i].write('${element!.branchNumber},${element.billType.toString()},'
-                '${element!.billNumber}, $item \n');
-          }
-
-          // bufferList[i].write(item.contains('sanf') ?'${item.substring(5)},' : '$item,');
-          // bufferList[i].write('$item,');
-        });
+    }
+    //new new
+    print('billTextModelafter save ${billTextModel.serialMap}');
+    billTextModel!.serialMap.forEach((element) {
+      if(element.contains('sanf')==false){
+        bufferList[billTextModel!.serialMap.indexOf(element)].
+        write('${billTextModel!.branchNumber},'
+            '${billTextModel!.billType.toString()},'
+            '${billTextModel!.billNumber}, $element \n');
       }
+      concatenateMybillsList.write('${bufferList[billTextModel!.serialMap.indexOf(element)]} ');
 
-
-
-      // concatenateMybillsList.write('Bill Type : ${element.billType.toString()}  \n'
-      //     'Bill Number: ${element!.billNumber} \n '
-      //     'Branch Number : ${element!.branchNumber} \n'
-      //     'Serials : ${element.serialMap.toString()} \n' )  ;
-      // concatenateMybillsList.write('$bufferList');
-      concatenateMybillsList.write('${bufferList[myBills.indexOf(element)]} \n');
-      // concatenateMybillsList.write('${element!.branchNumber},${element.billType.toString()},'
-      //     '${element!.billNumber}, ${bufferList[myBills.indexOf(element)]} \n');
-      newContent=concatenateMybillsList.toString() ;
     });
+
+    // concatenateMybillsList.write('${element!.branchNumber},${element.billType.toString()},'
+    //     '${element!.billNumber}, ${bufferList[myBills.indexOf(element)]} \n');
+    newContent=concatenateMybillsList.toString() ;
     save();
 
     FileStorage.writeCounter(
-        newContent, "Fatora.txt").then((file) {
+        newContent, "${billTextModel!.billNumber}.txt").then((file) {
       // List<String> list =[];
       // map.forEach((key, value) { list.add(value);});
       // list.map((e) => {"" :  ""});
@@ -318,19 +151,23 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
       ));
       Navigator.pushReplacement(context, MaterialPageRoute(builder:
           (context) {
-        return HomeScreen( sharedPreferences: widget.sharedPreferences,backAfterEdit: true,billLList: [],);
+        return HomeScreen( sharedPreferences: widget.sharedPreferences,
+          backAfterEdit: true,billLList: [],);
       }
       ));
     });
 
   }
 
-
+  var sanfXXX='';
   List<TextEditingController>  textList=[];
   var _billType=0;
   var _billNumber='';
   var _itemNumber='';
-
+  List<String> scannerList=[];
+  List<TextEditingController> scannerTextEditControllerList=[];
+  TextEditingController sanfTextController=TextEditingController();
+  final focusSerialNumber=FocusNode();
   var x = 0;
   var dropDownvalue=1;
   var noOfSerials=0;
@@ -342,6 +179,11 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
   var sanfName='';
   Future<bool> _onWillPop() async{
     _formKey.currentState!.deactivate();
+    List<String>?  editList=  widget.sharedPreferences!.getStringList('editList');
+    if(editList !=null && editList.isNotEmpty ){
+      widget.billTextModel.serialMap=editList;
+      widget.sharedPreferences!.setStringList('editList' , []);
+    }
     Navigator.pop(context);
     return false;
   }
@@ -362,7 +204,7 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
 
     }
 
-    // x =   myBills.indexWhere((element) => widget.billTextModel.path ==element.path);
+    // p =   myBills.indexWhere((element) => widget.billTextModel.path ==element.path);
     BillTextModel billTextModel = myBills[widget.currentIndex];
        // sanfList1=billTextModel.serialMap ;
       // billTextModel.serialMap.forEach((element) {
@@ -411,22 +253,39 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
           ),
           actions: [
             TextButton(onPressed: () {
+            if(_formKey.currentState!.validate()){
               _formKey.currentState!.save();
               myBills[widget.currentIndex].billNumber=widget.billTextModel.billNumber;
               myBills[widget.currentIndex].branchNumber=widget.billTextModel.branchNumber;
               myBills[widget.currentIndex].billType =widget.billTextModel.billType;
-             myBills[widget.currentIndex].serialMap=widget.serialList;
-             print('myBills[widget.currentIndex].serialMap ${myBills[widget.currentIndex].serialMap}');
+              myBills[widget.currentIndex].serialMap=widget.billTextModel.serialMap;
+              print('myBills[widget.currentIndex].serialMap ${myBills[widget.currentIndex].serialMap}');
 
               // myBills[widget.currentIndex].serialMap=sanfList1;
               save();
               _createTextFile2( map: serialMap,
                   billTextModel: widget.billTextModel);
+            }
             }, child: Text('تعديل' , style:
             TextStyle(color: Colors.white , fontWeight: FontWeight.bold ,
                 fontSize: 20),)
             )
           ],
+          leading: IconButton(onPressed: () {
+            List<String>?  editList=  widget.sharedPreferences!.getStringList('editList');
+            if(editList !=null && editList.isNotEmpty ){
+              widget.billTextModel.serialMap=editList;
+              widget.sharedPreferences!.setStringList('editList' , []);
+            }
+
+            Navigator.pushReplacement(context, MaterialPageRoute(builder:
+                (context) {
+              return HomeScreen( sharedPreferences: widget.sharedPreferences,
+                billLList: [],);
+            }
+            ));
+          },
+              icon: Icon(Icons.arrow_back , color: Colors.white,)),
         ),
         body: GestureDetector(
           onTap: () {
@@ -461,17 +320,20 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
                               DropdownButton<int>(
 
                                 icon: Icon(Icons.arrow_drop_down_outlined),
-                                value: dropDownvalue,
+                                value: widget.billTextModel.billType,
                                 items:  [
-                                  DropdownMenuItem(value: 1,
-                                    child: Text(widget.billTextModel.billType==1?'نقدى':'أجلة' ,
+                                  DropdownMenuItem(
+
+                                    value: 1,
+                                    child: Text('نقدى',
                                       style: TextStyle(color: Colors.black
                                           ,fontWeight: FontWeight.bold),) ,),
                                   DropdownMenuItem(value: 3,
-                                    child: Text(widget.billTextModel.billType==1?'أجلة':'نقدى' ,
+                                    child: Text('أجلة' ,
                                       style: TextStyle(color: Colors.black
                                           ,fontWeight: FontWeight.bold),),),
                                 ],
+
                                 onChanged: (value) {
                                   widget.billTextModel.billType =value!;
                                   dropDownvalue = value!;
@@ -510,8 +372,13 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
                         child: Directionality(
                           textDirection: TextDirection.rtl,
                           child: TextFormField(
+                            onTapOutside: (event){
+                              // FocusManager.instance.primaryFocus?.unfocus();
+                              FocusScope.of(context).unfocus();
+                            },
                             textInputAction: TextInputAction.next,
                             initialValue: widget.billTextModel.branchNumber,
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               focusedBorder: OutlineInputBorder(
                                 borderSide:
@@ -538,20 +405,23 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
 
                             },
                             onSaved: (value){
-                              widget.billTextModel.branchNumber=value!;
-                              setState(() {
-                                // _serialList.add(_enteredBillNumber);
-                                // map['_enteredBillType']=_enteredBillType.toString();
+                              if(value!.isNotEmpty && value!.length>0){
+                                widget.billTextModel.branchNumber=value!;
+                                setState(() {
+                                  // _serialList.add(_enteredBillNumber);
+                                  // map['_enteredBillType']=_enteredBillType.toString();
 
-                              });
+                                });
+                              }
+
                             },
-                            onChanged: (value) {
-                              widget.billTextModel.branchNumber=value!;
-
-                              setState(() {
-
-                              });
-                            },
+                            // onChanged: (value) {
+                            //   widget.billTextModel.branchNumber=value!;
+                            //
+                            //   setState(() {
+                            //
+                            //   });
+                            // },
                           ),
                         ),
                       ),
@@ -564,8 +434,13 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
                         child: Directionality(
                           textDirection: TextDirection.rtl,
                           child: TextFormField(
+                              onTapOutside: (event){
+                                // FocusManager.instance.primaryFocus?.unfocus();
+                                FocusScope.of(context).unfocus();
+                              },
                               textInputAction: TextInputAction.next,
                               initialValue: widget.billTextModel.billNumber,
+                              keyboardType: TextInputType.number,
                               decoration: InputDecoration(
 
 
@@ -586,12 +461,12 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
                                   borderRadius: BorderRadius.circular(50.0),
                                 ),
                               ),
-                              onChanged: (value){
-                                setState(() {
-                                  widget.billTextModel.billNumber =value;
-                                });
-
-                              },
+                              // onChanged: (value){
+                              //   setState(() {
+                              //     widget.billTextModel.billNumber =value;
+                              //   });
+                              //
+                              // },
                               onSaved: (v){
                                 if(v!.isNotEmpty && v.length>0){
                                   widget.billTextModel.billNumber=v;
@@ -619,231 +494,384 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
                                         builder: (context,setState)=>
                                             Form(
                                               key: _formKeyDialog,
-                                              child: AlertDialog(
+                                              child: SingleChildScrollView(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                                  children: [
+                                                    AlertDialog(
 
-                                                title: Container(
-                                                  width: width*80/100,
-                                                  child: Directionality(
-                                                    textDirection: TextDirection.rtl,
-                                                    child: TextFormField(
-                                                      textInputAction: TextInputAction.next,
-                                                      decoration: InputDecoration(
-                                                        focusedBorder: OutlineInputBorder(
-                                                          borderSide:
-                                                          BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
-                                                          borderRadius: BorderRadius.circular(50.0),
-                                                        ),
-                                                        filled: true,
-                                                        alignLabelWithHint: false,
-                                                        label: Text('كود الصنف',
-                                                          style: TextStyle(fontWeight: FontWeight.bold ,color:
-                                                          Colors.black), textAlign: TextAlign.right,),
-                                                        fillColor: Colors.black.withOpacity(0.1),
-                                                        enabledBorder: OutlineInputBorder(
-                                                          borderSide:
-                                                          BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
-                                                          borderRadius: BorderRadius.circular(50.0),
-                                                        ),
-                                                      ),
-                                                      onSaved: (value){
-                                                        if(value!.isNotEmpty &&value!.length>0)
-                                                        {
-                                                          widget.billTextModel.serialMap.add
-                                                            ('sanf $value');
-                                                          //    sanfList1=widget.billTextModel.serialMap;
-                                                         sanfName=value;
-                                                          // itemsList.add('sanf $value');
-                                                          // sanfList22.add('sanf, $value');
-                                                          // widget.billTextModel.serialMap.toSet().toList();
-
-
-                                                        }
-
-
-                                                      },
-                                                      onChanged: (value){
-
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
-                                                content: SingleChildScrollView(
-                                                  child: Column(
-                                                    children: [
-                                                      Container(
-                                                        margin: EdgeInsets.all(5),
-                                                        width: width*70/100,
+                                                      title: Container(
+                                                        width: width*80/100,
                                                         child: Directionality(
                                                           textDirection: TextDirection.rtl,
-                                                          child: TextFormField(
-                                                            textInputAction: TextInputAction.next,
-                                                            decoration: InputDecoration(
-                                                              focusedBorder: OutlineInputBorder(
-                                                                borderSide:
-                                                                BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
-                                                                borderRadius: BorderRadius.circular(50.0),
-                                                              ),
-                                                              filled: true,
-                                                              alignLabelWithHint: false,
-                                                              label: Text('عدد السيريال',
-                                                                style: TextStyle(fontWeight: FontWeight.bold ,color:
-                                                                Colors.black), textAlign: TextAlign.right,),
-                                                              fillColor: Colors.black.withOpacity(0.1),
-                                                              enabledBorder: OutlineInputBorder(
-                                                                borderSide:
-                                                                BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
-                                                                borderRadius: BorderRadius.circular(50.0),
-                                                              ),
-                                                            ),
-                                                            onChanged: (value){
-                                                              noOfSerials1=int.parse(value);
-                                                              for(var i=0 ; i <noOfSerials1 ;i++){
-                                                                focusListDialog.insert(i, FocusNode());
-                                                              }
-                                                              setState(() {
+                                                          child: Row(
+                                                            mainAxisSize: MainAxisSize.max,
+                                                            mainAxisAlignment: MainAxisAlignment.end,
+                                                            children: [
+                                                              Container(
+                                                                width:  width*45/100,
+                                                                child: TextFormField(
+                                                                  onFieldSubmitted: (v){
+                                                                    focusSerialNumber.requestFocus();
+                                                                  },
+                                                                  controller: sanfTextController,
+                                                                  textInputAction: TextInputAction.next,
+                                                                  decoration: InputDecoration(
+                                                                    focusedBorder: OutlineInputBorder(
+                                                                      borderSide:
+                                                                      BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
+                                                                      borderRadius: BorderRadius.circular(50.0),
+                                                                    ),
+                                                                    filled: true,
+                                                                    alignLabelWithHint: false,
+                                                                    label: Text('كود الصنف',
+                                                                      style: TextStyle(fontWeight: FontWeight.bold ,color:
+                                                                      Colors.black), textAlign: TextAlign.right,),
+                                                                    fillColor: Colors.black.withOpacity(0.1),
+                                                                    enabledBorder: OutlineInputBorder(
+                                                                      borderSide:
+                                                                      BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
+                                                                      borderRadius: BorderRadius.circular(50.0),
+                                                                    ),
+                                                                  ),
+                                                                  onSaved: (value){
+                                                                    if(value!.isNotEmpty &&value!.length>0)
+                                                                    {
+                                                                     //  widget.billTextModel.serialMap.add
+                                                                     //    ('sanf $value');
+                                                                     //  //    sanfList1=widget.billTextModel.serialMap;
+                                                                     // sanfName=value;
+                                                                      sanfName=value;
+                                                                      if(noOfSerials1>0){
+                                                                        widget.billTextModel.serialMap.add
+                                                                          ('${noOfSerials1}/sanf, $value');
+                                                                      }else {
+                                                                        widget.billTextModel.serialMap.add('sanf, $value');
+                                                                      }
 
-                                                              });
-                                                            },
+
+
+                                                                      // itemsList.add('sanf $value');
+                                                                      // sanfList22.add('sanf, $value');
+                                                                      // widget.billTextModel.serialMap.toSet().toList();
+
+
+                                                                    }
+
+
+                                                                  },
+                                                                  onChanged: (value){
+
+                                                                  },
+                                                                ),
+                                                              ),
+                                                              IconButton(
+                                                                  onPressed: () async {
+                                                                    String barcodeScanRes;
+                                                                    try{
+                                                                      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode('#ff6666',
+                                                                          'الغاء',
+                                                                          true,
+                                                                          ScanMode.BARCODE);
+                                                                      print('barcodeScanRes $barcodeScanRes');
+
+                                                                    }on PlatformException  {
+                                                                      barcodeScanRes='فشل المسح';
+                                                                    }if(!mounted)return ;
+                                                                    setState(() {
+                                                                      // scannerList[index] ='$barcodeScanRes';
+                                                                      sanfTextController.text='$barcodeScanRes';
+                                                                      // scannerList.insert(index, '$barcodeScanRes');
+
+                                                                    });
+
+                                                                  },
+                                                                  icon: Icon(Icons.scanner)),
+                                                            ],
                                                           ),
                                                         ),
                                                       ),
-                                                      if(noOfSerials1>0)
-                                                        Column(children: List.generate(noOfSerials1, (index) {
-                                                          if(index == noOfSerials1-1)
-                                                          {return Container(
-                                                            margin: EdgeInsets.all(5),
-                                                            width: width*80/100,
-                                                            child: Directionality(
-                                                              textDirection: TextDirection.rtl,
-                                                              child: TextFormField(
-                                                                textInputAction: TextInputAction.next,
-                                                                focusNode: focusListDialog[noOfSerials1-1],
-                                                                decoration: InputDecoration(
-                                                                  focusedBorder: OutlineInputBorder(
-                                                                    borderSide:
-                                                                    BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
-                                                                    borderRadius: BorderRadius.circular(50.0),
+                                                      content: SingleChildScrollView(
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                                          children: [
+                                                            Container(
+                                                              margin: EdgeInsets.only(right: 20),
+                                                              width: width*45/100,
+                                                              child: Directionality(
+                                                                textDirection: TextDirection.rtl,
+                                                                child: TextFormField(
+                                                                  textInputAction: TextInputAction.next,
+                                                                  focusNode: focusSerialNumber,
+                                                                  decoration: InputDecoration(
+                                                                    focusedBorder: OutlineInputBorder(
+                                                                      borderSide:
+                                                                      BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
+                                                                      borderRadius: BorderRadius.circular(50.0),
+                                                                    ),
+                                                                    filled: true,
+                                                                    alignLabelWithHint: false,
+                                                                    label: Text('عدد السيريال',
+                                                                      style: TextStyle(fontWeight: FontWeight.bold ,color:
+                                                                      Colors.black), textAlign: TextAlign.right,),
+                                                                    fillColor: Colors.black.withOpacity(0.1),
+                                                                    enabledBorder: OutlineInputBorder(
+                                                                      borderSide:
+                                                                      BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
+                                                                      borderRadius: BorderRadius.circular(50.0),
+                                                                    ),
                                                                   ),
-                                                                  filled: true,
-                                                                  alignLabelWithHint: false,
-                                                                  label: Text('سيريال رقم ${index+1}',
-                                                                    style: TextStyle(fontWeight: FontWeight.bold ,color:
-                                                                    Colors.black), textAlign: TextAlign.right,),
-                                                                  fillColor: Colors.black.withOpacity(0.1),
-                                                                  enabledBorder: OutlineInputBorder(
-                                                                    borderSide:
-                                                                    BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
-                                                                    borderRadius: BorderRadius.circular(50.0),
-                                                                  ),
+                                                                  onChanged: (value){
+                                                                    noOfSerials1=int.parse(value);
+                                                                    for(var i=0 ; i <noOfSerials1 ;i++){
+                                                                      focusListDialog.insert(i, FocusNode());
+                                                                      scannerList.insert(i, '');
+                                                                      scannerTextEditControllerList.insert(i, TextEditingController());
+                                                                      scannerTextEditControllerList[i].text='';
+                                                                    }
+                                                                    setState(() {
+
+                                                                    });
+                                                                  },
                                                                 ),
-                                                                validator: (value){
-                                                                  if(value!.isNotEmpty && value!.length>0){
-                                                                    return null;
-                                                                  }
-                                                                  return'please enter a valid value';
-                                                                }
-                                                                ,
-                                                                onSaved: (value){
-                                                                  if(value!.isNotEmpty && value!.length>0)
-                                                                    widget.billTextModel.serialMap.
-                                                                    add('$sanfName, $value');
-                                                                  // sanfList1=widget.billTextModel.serialMap;
-                                                                  // itemsList=widget.billTextModel.serialMap;
-
-                                                                  // sanfList22.add('$sanfName, $value');
-                                                                  // widget.billTextModel.serialMap.toSet().toList();
-                                                                  var distinctIds =sanfList22.toSet().toList();
-                                                                  print('distinctIds $distinctIds');
-
-                                                                },
-                                                                onChanged: (value){
-                                                                  if(value.trim().characters.length==13)
-                                                                  {
-                                                                    focusNode: focus;
-                                                                    // TextInputAction.next ;
-                                                                    FocusScope.of(context).nearestScope;
-
-                                                                  }
-                                                                },
-
                                                               ),
                                                             ),
-                                                          ) ;}
-                                                          return Container(
-                                                            margin: EdgeInsets.all(5),
-                                                            width: width*80/100,
-                                                            child: Directionality(
-                                                              textDirection: TextDirection.rtl,
-                                                              child: TextFormField(
-                                                                textInputAction: TextInputAction.next,
-                                                                focusNode: focusListDialog[index],
-                                                                decoration: InputDecoration(
-                                                                  focusedBorder: OutlineInputBorder(
-                                                                    borderSide:
-                                                                    BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
-                                                                    borderRadius: BorderRadius.circular(50.0),
-                                                                  ),
-                                                                  filled: true,
-                                                                  alignLabelWithHint: false,
-                                                                  label: Text('سيريال رقم ${index+1}',
-                                                                    style: TextStyle(fontWeight: FontWeight.bold ,color:
-                                                                    Colors.black), textAlign: TextAlign.right,),
-                                                                  fillColor: Colors.black.withOpacity(0.1),
-                                                                  enabledBorder: OutlineInputBorder(
-                                                                    borderSide:
-                                                                    BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
-                                                                    borderRadius: BorderRadius.circular(50.0),
-                                                                  ),
-                                                                ),
-                                                                validator: (value){
-                                                                  if(value!.isNotEmpty && value!.length>0){
-                                                                    return null;
-                                                                  }
-                                                                  return'please enter a valid value';
-                                                                }
-                                                                ,
-                                                                onSaved: (value){
-                                                                  if(value!.isNotEmpty && value!.length>0)
-                                                                    widget.billTextModel.serialMap.
-                                                                    add('$sanfName, $value');
-                                                                  // sanfList1=widget.billTextModel.serialMap;
-                                                                  // itemsList=widget.billTextModel.serialMap;
-                                                                  // sanfList22.add('$sanfName, $value');
-                                                                  // widget.billTextModel.serialMap.toSet().toList();
-                                                                  var distinctIds =sanfList22.toSet().toList();
-                                                                  print('sanfList22length${sanfList22.length}');
-                                                                  print('distinctIds $distinctIds');
-
-                                                                },
-                                                                onChanged: (value){
-                                                                  if(value.trim().characters.length==13)
+                                                            if(noOfSerials1>0)
+                                                              Column(children: List.generate(noOfSerials1,
+                                                                      (index)
                                                                   {
-                                                                    focusNode: focus;
-                                                                    // TextInputAction.next ;
-                                                                    FocusScope.of(context).requestFocus(focusListDialog[index+1]);
-                                                                  }
-                                                                },
+                                                                if(index == noOfSerials1-1)
+                                                                {
+                                                                  return Container(
+                                                                  margin: EdgeInsets.all(5),
+                                                                  width: width*80/100,
+                                                                  child: Directionality(
+                                                                    textDirection: TextDirection.rtl,
+                                                                    child: Row(
+                                                                      mainAxisSize: MainAxisSize.max,
+                                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                                      children: [
+                                                                        Container(
+                                                                          width:width*45/100,
+                                                                          child: TextFormField(
+                                                                            controller: scannerTextEditControllerList[index],
+                                                                            textInputAction: TextInputAction.next,
+                                                                            // onFieldSubmitted: (v){
+                                                                            //   focusListDialog[index+1].requestFocus();
+                                                                            // },
+                                                                            // autofocus: true,
+                                                                            focusNode: focusListDialog[noOfSerials1-1],
+                                                                            decoration: InputDecoration(
+                                                                              focusedBorder: OutlineInputBorder(
+                                                                                borderSide:
+                                                                                BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
+                                                                                borderRadius: BorderRadius.circular(50.0),
+                                                                              ),
+                                                                              filled: true,
+                                                                              alignLabelWithHint: false,
+                                                                              label: Text('سيريال رقم ${index+1}',
+                                                                                style: TextStyle(fontWeight: FontWeight.bold ,color:
+                                                                                Colors.black), textAlign: TextAlign.right,),
+                                                                              fillColor: Colors.black.withOpacity(0.1),
+                                                                              enabledBorder: OutlineInputBorder(
+                                                                                borderSide:
+                                                                                BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
+                                                                                borderRadius: BorderRadius.circular(50.0),
+                                                                              ),
+                                                                            ),
+                                                                            validator: (value){
+                                                                              if(value!.isNotEmpty && value!.length>0){
+                                                                                return null;
+                                                                              }
+                                                                              return'please enter a valid value';
+                                                                            }
+                                                                            ,
+                                                                            onSaved: (value){
+                                                                              if(value!.isNotEmpty && value!.length>0)
+                                                                                widget.billTextModel.serialMap.
+                                                                                add('$sanfName, $value');
+                                                                              // sanfList1=widget.billTextModel.serialMap;
+                                                                              // itemsList=widget.billTextModel.serialMap;
 
-                                                              ),
-                                                            ),
-                                                          ) ;
-                                                        }),)
-                                                    ],
-                                                  ),
+                                                                              // sanfList22.add('$sanfName, $value');
+                                                                              // widget.billTextModel.serialMap.toSet().toList();
+                                                                              var distinctIds =sanfList22.toSet().toList();
+                                                                              print('distinctIds $distinctIds');
+
+                                                                            },
+                                                                            onChanged: (value){
+                                                                              if(value.trim().characters.length==13)
+                                                                              {
+                                                                                focusNode: focus;
+                                                                                // TextInputAction.next ;
+                                                                                FocusScope.of(context).nearestScope;
+
+                                                                              }
+                                                                            },
+
+                                                                          ),
+                                                                        ),
+                                                                        IconButton(
+                                                                            onPressed: () async {
+                                                                              String barcodeScanRes;
+                                                                              try{
+                                                                                barcodeScanRes = await FlutterBarcodeScanner.scanBarcode('#ff6666',
+                                                                                    'الغاء',
+                                                                                    true,
+                                                                                    ScanMode.BARCODE);
+                                                                                print(barcodeScanRes);
+
+                                                                              }on PlatformException  {
+                                                                                barcodeScanRes='فشل المسح';
+                                                                              }if(!mounted)return ;
+
+                                                                              setState(() {
+                                                                                scannerList[index] ='$barcodeScanRes';
+                                                                                scannerTextEditControllerList[index].text='$barcodeScanRes';
+                                                                                // scannerList.insert(index, '$barcodeScanRes');
+                                                                                print('barcodeScanRes $barcodeScanRes');
+                                                                                print(scannerList[index]);
+                                                                                print('scannerList.length ${scannerList.length}');
+                                                                                print('${scannerList}');
+                                                                              });
+
+                                                                              // itemsList.add('$barcodeScanRes');
+                                                                              // sanfList1.add('$sanfName, $barcodeScanRes');
+
+                                                                            },
+                                                                            icon: Icon(Icons.scanner))
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ) ;}
+                                                                return Container(
+                                                                  margin: EdgeInsets.all(5),
+                                                                  width: width*80/100,
+                                                                  child: Directionality(
+                                                                    textDirection: TextDirection.rtl,
+                                                                    child: Row(
+                                                                      mainAxisSize: MainAxisSize.max,
+                                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                                      children: [
+                                                                        Container(
+                                                                          width:width*45/100,
+                                                                          child: TextFormField(
+                                                                            controller: scannerTextEditControllerList[index],
+                                                                            textInputAction: TextInputAction.next,
+                                                                            focusNode: focusListDialog[index],
+                                                                            // autofocus: true,
+                                                                            onFieldSubmitted: (v){
+                                                                              focusListDialog[index+1].requestFocus();
+                                                                            },
+                                                                            decoration: InputDecoration(
+                                                                              focusedBorder: OutlineInputBorder(
+                                                                                borderSide:
+                                                                                BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
+                                                                                borderRadius: BorderRadius.circular(50.0),
+                                                                              ),
+                                                                              filled: true,
+                                                                              alignLabelWithHint: false,
+                                                                              label: Text('سيريال رقم ${index+1}',
+                                                                                style: TextStyle(fontWeight: FontWeight.bold ,color:
+                                                                                Colors.black), textAlign: TextAlign.right,),
+                                                                              fillColor: Colors.black.withOpacity(0.1),
+                                                                              enabledBorder: OutlineInputBorder(
+                                                                                borderSide:
+                                                                                BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
+                                                                                borderRadius: BorderRadius.circular(50.0),
+                                                                              ),
+                                                                            ),
+                                                                            validator: (value){
+                                                                              if(value!.isNotEmpty && value!.length>0){
+                                                                                return null;
+                                                                              }
+                                                                              return'please enter a valid value';
+                                                                            }
+                                                                            ,
+                                                                            onSaved: (value){
+                                                                              if(value!.isNotEmpty && value!.length>0)
+                                                                                widget.billTextModel.serialMap.
+                                                                                add('$sanfName, $value');
+                                                                              // sanfList1=widget.billTextModel.serialMap;
+                                                                              // itemsList=widget.billTextModel.serialMap;
+                                                                              // sanfList22.add('$sanfName, $value');
+                                                                              // widget.billTextModel.serialMap.toSet().toList();
+                                                                              var distinctIds =sanfList22.toSet().toList();
+                                                                              print('sanfList22length${sanfList22.length}');
+                                                                              print('distinctIds $distinctIds');
+
+                                                                            },
+                                                                            onChanged: (value){
+                                                                              if(value.trim().characters.length==13)
+                                                                              {
+                                                                                focusNode: focus;
+                                                                                // TextInputAction.next ;
+                                                                                FocusScope.of(context).requestFocus(focusListDialog[index+1]);
+                                                                              }
+                                                                            },
+
+                                                                          ),
+                                                                        ),
+                                                                        IconButton(
+                                                                            onPressed: () async {
+                                                                              String barcodeScanRes;
+                                                                              try{
+                                                                                barcodeScanRes = await FlutterBarcodeScanner.scanBarcode('#ff6666',
+                                                                                    'الغاء',
+                                                                                    true,
+                                                                                    ScanMode.BARCODE);
+                                                                                print('barcodeScanRes $barcodeScanRes');
+
+                                                                              }on PlatformException  {
+                                                                                barcodeScanRes='فشل المسح';
+                                                                              }if(!mounted)return ;
+                                                                              setState(() {
+                                                                                scannerList[index] ='$barcodeScanRes';
+                                                                                scannerTextEditControllerList[index].text='$barcodeScanRes';
+                                                                                // scannerList.insert(index, '$barcodeScanRes');
+                                                                                print('barcodeScanRes $barcodeScanRes');
+                                                                                print(scannerList[index]);
+                                                                                print('scannerList.length ${scannerList.length}');
+                                                                                print('${scannerList}');
+                                                                              });
+
+                                                                            },
+                                                                            icon: Icon(Icons.scanner))
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ) ;
+                                                              }),)
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      actions: [
+                                                        TextButton(onPressed:() {
+                                                          if(_formKeyDialog.currentState!.validate()){
+
+                                                            print('widget.billTextModel.serialMap${widget.billTextModel.serialMap}');
+                                                            _formKeyDialog.currentState!.save();
+                                                            scannerList=[];
+                                                            scannerTextEditControllerList=[];
+                                                            noOfSerials1=0;
+                                                            sanfTextController.text='';
+                                                            Navigator.of(context).pop();
+                                                            backafteraddItem=true;
+                                                          }
+
+                                                        }, child: Text('حفظ')),
+                                                        SizedBox(width:40 ,),
+                                                        TextButton(
+                                                            onPressed:() {
+                                                              Navigator.of(context).pop();
+
+                                                            }, child:
+                                                        Text('الغاء' ,
+                                                          style: TextStyle(fontSize: 20),)),
+                                                      ],
+                                                    ),
+                                                  ],
                                                 ),
-                                                actions: [
-                                                  TextButton(onPressed:() {
-                                                    if(_formKeyDialog.currentState!.validate()){
-
-                                                      print('widget.billTextModel.serialMap${widget.billTextModel.serialMap}');
-                                                      _formKeyDialog.currentState!.save();
-
-                                                      Navigator.of(context).pop();
-                                                      backafteraddItem=true;
-                                                    }
-
-                                                  }, child: Text('حفظ'))
-                                                ],
                                               ),
                                             ),
 
@@ -875,25 +903,298 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
                           focusList.insert(i, FocusNode());
                         }
                         if(index == widget.billTextModel.serialMap.length-1){
-                          return Container(
-                            key: ObjectKey(widget.billTextModel.serialMap[index]),
-                            margin: EdgeInsets.all(5),
-                            width: width*80/100,
-                            child: Directionality(
-                              textDirection: TextDirection.rtl,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Container(
-                                     width: width*60/100,
-                                    child: Stack(
-                                      children:[
-                                        TextFormField(
+                          if(widget.billTextModel.serialMap[index].contains("sanf"))
+                          {
+                            return Container(
+                              key: ObjectKey(widget.billTextModel.serialMap[index]),
+                              margin: EdgeInsets.all(5),
+                              width: width*80/100,
+                              child: Directionality(
+                                textDirection: TextDirection.rtl,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      width: width*50/100,
+                                      child: TextFormField(
+                                        cursorColor: Colors.white,
+                                        onTapOutside: (event){
+                                          // FocusManager.instance.primaryFocus?.unfocus();
+                                          FocusScope.of(context).unfocus();
+                                        },
+                                        textInputAction: TextInputAction.next,
+                                        focusNode: focusList[index],
+                                        onFieldSubmitted: (v){
+                                          focusList[index+1].requestFocus();
+                                        },
+                                        initialValue:widget.billTextModel.serialMap[index].contains('sanf') ?
+                                        widget.billTextModel.serialMap[index].substring(7).trim():
+                                        widget.billTextModel.serialMap[index].substring(widget.billTextModel.serialMap[index].indexOf(',')+1).trim(),
+                                        decoration: InputDecoration(
+
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide:
+                                            BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
+                                            borderRadius: BorderRadius.circular(50.0),
+                                          ),
+                                          filled: true,
+                                          alignLabelWithHint: false,
+                                          label: Text((widget.billTextModel.serialMap[index].contains('/sanf'))?
+                                          'كود الصنف':'سيريال ',
+                                            style: TextStyle(fontWeight: FontWeight.bold ,
+                                                color:widget.billTextModel.serialMap[index].contains('/sanf') ?
+                                                Colors.black:
+                                                Colors.black), textAlign: TextAlign.right,),
+                                          fillColor: widget.billTextModel.serialMap[index].contains('/sanf') ?
+                                          Colors.green :
+                                          Colors.black.withOpacity(0.1),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide:
+                                            BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
+                                            borderRadius: BorderRadius.circular(50.0),
+                                          ),
+                                        ),
+                                        validator: (value){
+                                          if(value!.isEmpty ||value.length<1)
+                                          {return ' please Enter Valid value' ;}
+                                          else return null ;
+
+                                        },
+
+                                        onChanged: (value){
+
+                                          if(value!.isNotEmpty && value.length>0){
+                                            // var x=sanfList22[index].substring(0 , sanfList22[index].indexOf(',')+1);
+                                            // sanfList22[index]= '$x $value';
+                                            var x=widget.billTextModel.serialMap[index].substring(0 ,
+                                                widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                            // widget.billTextModel.serialMap[index]= '$x $value';
+                                            // print('onchangedsanfList22 $sanfList22');
+                                            if(widget.billTextModel.serialMap[index].contains("sanf")){
+                                              widget.billTextModel.serialMap[index]="$x ${value}";
+                                            }
+                                            if(!widget.billTextModel.serialMap[index].contains("sanf")){
+                                              widget.billTextModel.serialMap[index]='$x $value'
+                                              ;
+                                            }
+                                          }
+
+                                          if(value.trim().characters.length==13)
+                                          {
+                                          focusNode: focus;
+                                          // TextInputAction.next ;
+                                          FocusScope.of(context).requestFocus(focusList[index+1]);
+                                          }
+                                        },
+
+                                        onSaved: (v){
+                                          if(v!.trim().isNotEmpty && v.trim().length>0){
+                                            // var x=sanfList22[index].substring(0 ,
+                                            //     sanfList22[index].indexOf(',')+1);
+                                            // sanfList22[index]= '$x $v';
+                                            var x=widget.billTextModel.serialMap[index].substring(0 ,
+                                                widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                            widget.billTextModel.serialMap[index]="${x.trim()} ${v.trim()}";
+                                            // widget.billTextModel.serialMap[index]= '$x $v';
+                                            // if(widget.billTextModel.serialMap[index].contains("sanf")){
+                                            //   widget.billTextModel.serialMap[index]="$x ${v}";
+                                            // }
+                                            // if(!widget.billTextModel.serialMap[index].contains("sanf")){
+                                            //   widget.billTextModel.serialMap[index]='$x $v'
+                                            //   ;
+                                            // }
+                                            serialMap['${index}']=v!;
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                    Column(
+                                      mainAxisSize: MainAxisSize.max,
+
+                                      children: [
+                                        Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              width: width*10/100,
+                                              child: IconButton(
+                                                  onPressed: (){
+
+                                                    // widget.billTextModel.serialMap.removeAt(index);
+                                                    // if(itemsList[index].contains('sanf')==true){
+                                                    //
+                                                    //   itemsList.removeWhere((element) => element.contains(
+                                                    //       '${itemsList[index]
+                                                    //       }'));
+                                                    //   setState(() {
+                                                    //
+                                                    //   });
+                                                    // }
+
+
+                                                    if(widget.billTextModel.serialMap[index].contains("sanf")){
+
+                                                      showDialog(context: context, builder:
+                                                          (context){
+                                                        return AlertDialog(
+                                                          actions: [
+                                                            TextButton(onPressed:(){
+                                                              var y =0;
+                                                              var x =widget.billTextModel.serialMap[index].
+                                                              substring(0,  (widget.billTextModel.serialMap[index].indexOf('/'))) ;
+                                                              y=int.parse(x);
+                                                              print(x);
+                                                              print(y);
+
+                                                              widget.billTextModel.serialMap.removeRange(index, index+y+1);
+                                                              Navigator.of(context).pop();
+                                                              setState(() {
+
+                                                              });
+                                                            } , child: Text('نعم', style:
+                                                            TextStyle(color: Colors.white , fontSize: 30 ,
+                                                                fontWeight: FontWeight.bold))),
+                                                            TextButton(onPressed: (){
+                                                              Navigator.of(context).pop();
+                                                            }, child: Text('لا' ,
+                                                                style:
+                                                                TextStyle(color: Colors.white , fontSize: 30 ,
+                                                                    fontWeight: FontWeight.bold)))
+                                                          ],
+                                                          content: Directionality(
+                                                            textDirection: TextDirection.rtl,
+                                                            child: Text('هل تريد حذف الصنف بقائمة السيريال التابعة له', style:
+                                                            TextStyle(color: Colors.white , fontSize: 30 ,
+                                                                fontWeight: FontWeight.bold),
+                                                            ),
+                                                          ),
+                                                          backgroundColor: Colors.green,
+                                                        );
+                                                      });
+
+                                                    }
+                                                    else {
+
+                                                      var u=widget.billTextModel.serialMap[index].substring(0,
+                                                        widget.billTextModel.serialMap[index].indexOf(',') ,
+                                                      );
+                                                      widget.billTextModel.serialMap.forEach((element) {
+                                                        if(element.contains('sanf') && element.contains(u)){
+                                                          print('element1 is sanf??? $element');
+                                                          var y =0;
+                                                          var x =element.
+                                                          substring(0,  (element.indexOf('/'))) ;
+
+                                                          y=int.parse(x);
+                                                          print('xxx $x');
+                                                          print('yyyy $y');
+                                                          var pos = widget.billTextModel.serialMap.indexOf(element);
+                                                          var newSanf= element.substring(1);
+                                                          print('newSanf $newSanf');
+                                                          var secondSanf= '${y-1}$newSanf';
+                                                          print('secondSanf $secondSanf');
+                                                          widget.billTextModel.serialMap[pos]=secondSanf;
+
+                                                          print('element1 $element');
+                                                        }
+
+                                                      });
+                                                      widget.billTextModel.serialMap.removeAt(index);
+                                                      // sanfList22.removeAt(index);
+                                                      setState(() {
+
+                                                      });
+                                                    }
+
+
+
+
+                                                  },
+                                                  icon: Icon(Icons.delete)),
+                                            ),
+                                            IconButton(
+                                                onPressed: () async {
+                                                  String x='';
+                                                  String barcodeScanRes;
+
+                                                  try{
+                                                    barcodeScanRes = await FlutterBarcodeScanner.scanBarcode('#ff6666',
+                                                        'الغاء',
+                                                        true,
+                                                        ScanMode.BARCODE);
+                                                    print(barcodeScanRes);
+
+                                                  }on PlatformException  {
+                                                    barcodeScanRes='فشل المسح';
+                                                  }if(!mounted)return ;
+                                                  if(widget.billTextModel.serialMap[index].contains("sanf")){
+                                                    sanfXXX=widget.billTextModel.serialMap[index].substring(4 ,
+                                                        widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                                    print('xxx $x');
+
+
+                                                    widget.billTextModel.serialMap[index]="sanf ${barcodeScanRes}";
+                                                    widget.billTextModel.serialMap.forEach((element) {
+                                                      if(element.contains(x)){
+                                                        element.substring(0 ,
+                                                            widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                                        element='${barcodeScanRes}, $element' ;
+                                                      }
+                                                    });
+
+                                                  }
+                                                  if(!widget.billTextModel.serialMap[index].contains("sanf")){
+                                                    var x=widget.billTextModel.serialMap[index].substring(0 ,
+                                                        widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                                    widget.billTextModel.serialMap[index]='$x $barcodeScanRes';
+                                                  }
+                                                  setState(() {
+
+                                                  });
+                                                },
+                                                icon: Icon(Icons.scanner)),
+                                          ],
+                                        ),
+                                        TextButton(onPressed: () {
+                                          var x=widget.billTextModel.serialMap[index].substring(5) ;
+
+                                          widget.billTextModel.serialMap.insert(index+1,'$x, ');
+                                          setState(() {
+
+                                          });
+                                        },
+                                            child: Text('اضافة سيريال'))
+                                      ],
+                                    ),
+
+                                  ],
+                                ),
+                              ),
+                            ) ;
+                          }else{
+                            return Container(
+                              key: ObjectKey(widget.billTextModel.serialMap[index]),
+                              margin: EdgeInsets.all(5),
+                              width: width*80/100,
+                              child: Directionality(
+                                textDirection: TextDirection.rtl,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      width: width*50/100,
+                                      child: TextFormField(
+                                        onTapOutside: (event){
+                                          // FocusManager.instance.primaryFocus?.unfocus();
+                                          FocusScope.of(context).unfocus();
+                                        },
                                         textInputAction: TextInputAction.next,
                                         initialValue:widget.billTextModel.serialMap[index].contains('sanf') ?
-                                        widget.billTextModel.serialMap[index].substring(5):
-                                        widget.billTextModel.serialMap[index].substring(widget.billTextModel.serialMap[index].indexOf(',')+1) ,
+                                        widget.billTextModel.serialMap[index].substring(7).trim():
+                                        widget.billTextModel.serialMap[index].substring(widget.billTextModel.serialMap[index].indexOf(',')+1).trim() ,
                                         decoration: InputDecoration(
 
                                           focusedBorder: OutlineInputBorder(
@@ -906,9 +1207,9 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
                                           label: Text((widget.billTextModel.serialMap[index].startsWith('sanf'))?
                                           'كود الصنف':'سيريال  ',
                                             style: TextStyle(fontWeight: FontWeight.bold ,
-                                                color:widget.billTextModel.serialMap[index].startsWith('sanf') ? Colors.black:
+                                                color:widget.billTextModel.serialMap[index].contains('/sanf') ? Colors.black:
                                                 Colors.black), textAlign: TextAlign.right,),
-                                          fillColor: widget.billTextModel.serialMap[index].startsWith('sanf') ?Colors.green :
+                                          fillColor: widget.billTextModel.serialMap[index].contains('/sanf')?Colors.green :
                                           Colors.black.withOpacity(0.1),
                                           enabledBorder: OutlineInputBorder(
                                             borderSide:
@@ -917,78 +1218,540 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
                                           ),
                                         ),
                                         focusNode: focusList[widget.billTextModel.serialMap.length-1],
-                                        onChanged: (value){
-                                          if(value!.isNotEmpty && value.length>0){
-                                            // var x=sanfList22[index].substring(0 , sanfList22[index].indexOf(',')+1);
-                                            // sanfList22[index]= '$x $value';
-                                            var x=widget.billTextModel.serialMap[index].substring(0 ,
-                                                widget.billTextModel.serialMap[index].indexOf(',')+1);
-                                            widget.billTextModel.serialMap[index]= '$x $value';
-                                            print('onchangedsanfList22 $sanfList22');
-                                            // if(widget.billTextModel.serialMap[index].contains("sanf")){
-                                            //   widget.billTextModel.serialMap[index]="sanf ${value}";
-                                            // }
-                                            // if(!widget.billTextModel.serialMap[index].contains("sanf")){
-                                            //   widget.billTextModel.serialMap[index]=value;}
-                                          }
-
-
-                                          if(value.trim().characters.length==13)
-                                            FocusScope.of(context).unfocus();
+                                        // onChanged: (value){
+                                        //   if(value!.isNotEmpty && value.length>0){
+                                        //     // var x=sanfList22[index].substring(0 , sanfList22[index].indexOf(',')+1);
+                                        //     // sanfList22[index]= '$x $value';
+                                        //     var x=widget.billTextModel.serialMap[index].substring(0 ,
+                                        //         widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                        //     // widget.billTextModel.serialMap[index]= '$x $value';
+                                        //     // print('onchangedsanfList22 $sanfList22');
+                                        //     if(widget.billTextModel.serialMap[index].contains("sanf")){
+                                        //       widget.billTextModel.serialMap[index]="$x ${value}";
+                                        //     }
+                                        //     if(!widget.billTextModel.serialMap[index].contains("sanf")){
+                                        //       widget.billTextModel.serialMap[index]='$x $value'
+                                        //       ;
+                                        //     }
+                                        //   }
+                                        //
+                                        //
+                                        //   if(value.trim().characters.length==13)
+                                        //     FocusScope.of(context).unfocus();
+                                        //
+                                        // },
+                                        validator: (value){
+                                          if(value!.isEmpty ||value.length<1)
+                                          {return ' please Enter Valid value' ;}
+                                          else return null ;
 
                                         },
-                                            onSaved: (v){
-                                              if(v!.isNotEmpty && v.length>0){
-                                                // var x=sanfList22[index].substring(0 ,
-                                                //     sanfList22[index].indexOf(',')+1);
-                                                // sanfList22[index]= '$x $v';
-                                                var x=widget.billTextModel.serialMap[index].substring(0 ,
-                                                    widget.billTextModel.serialMap[index].indexOf(',')+1);
-                                                // widget.billTextModel.serialMap[index]= '$x $v';
-                                                if(widget.billTextModel.serialMap[index].contains("sanf")){
-                                                  widget.billTextModel.serialMap[index]="sanf $x ${v}";
-                                                }
-                                                if(!widget.billTextModel.serialMap[index].contains("sanf")){
-                                                  widget.billTextModel.serialMap[index]='$x $v'
-                                                  ;}
-                                                serialMap['${index}']=v!;
-                                              }
-                                            },
+                                        onSaved: (v){
+                                          if(v!.trim().isNotEmpty && v.trim().length>0){
+                                            // var x=sanfList22[index].substring(0 ,
+                                            //     sanfList22[index].indexOf(',')+1);
+                                            // sanfList22[index]= '$x $v';
+                                            var x=widget.billTextModel.serialMap[index].substring(0 ,
+                                                widget.billTextModel.serialMap[index].indexOf(',')+1);
+
+                                            widget.billTextModel.serialMap[index]="${x.trim()} ${v.trim()}";;
+                                            // if(widget.billTextModel.serialMap[index].contains("sanf")){
+                                            //   widget.billTextModel.serialMap[index]="$x ${v}";
+                                            // }
+                                            // if(!widget.billTextModel.serialMap[index].contains("sanf")){
+                                            //   widget.billTextModel.serialMap[index]='$x $v'
+                                            //   ;
+                                            // }
+                                            // widget.billTextModel.serialMap[index]= '$x $v';
+                                            // if(widget.billTextModel.serialMap[index].contains("sanf")){
+                                            //   widget.billTextModel.serialMap[index]="$x ${v}";
+                                            // }
+                                            // if(!widget.billTextModel.serialMap[index].contains("sanf")){
+                                            //   widget.billTextModel.serialMap[index]='$x $v'
+                                            //   ;}
+                                            serialMap['${index}']=v!;
+                                          }
+                                        },
                                       ),
-                                      Text('')],
                                     ),
-                                  ),
-                                  Container(
-                                    width: width*20/100,
-                                    child: IconButton(onPressed: (){
-                                      // print('index$index');
-                                      // print('sanfMap[itemsList[index]${sanfMap[itemsList[index]]}');
-                                      // if(itemsList[index].contains('sanf')){
-                                      //   // var i=itemsList.indexOf(itemsList[index]);
-                                      //   itemsList.removeRange(index, sanfMap[itemsList[index]]!);
-                                      //   // itemsList.removeWhere((element) => element.contains(
-                                      //   //     '${itemsList[index]
-                                      //   //     }'));
-                                      //   setState(() {
-                                      //
-                                      //   });
-                                      // }
-                                      widget.billTextModel.serialMap.removeAt(index);
-                                      sanfList22.removeAt(index);
-                                      setState(() {
+                                    Container(
+                                      width: width*10/100,
+                                      child: IconButton(
+                                          onPressed: (){
 
-                                      });
+                                            // widget.billTextModel.serialMap.removeAt(index);
+                                            // if(itemsList[index].contains('sanf')==true){
+                                            //
+                                            //   itemsList.removeWhere((element) => element.contains(
+                                            //       '${itemsList[index]
+                                            //       }'));
+                                            //   setState(() {
+                                            //
+                                            //   });
+                                            // }
 
 
-                                    },
-                                        icon: Icon(Icons.delete)),
-                                  ),
-                                ],
+                                            if(widget.billTextModel.serialMap[index].contains("sanf")){
+
+                                              showDialog(context: context, builder:
+                                                  (context){
+                                                return AlertDialog(
+                                                  actions: [
+                                                    TextButton(onPressed:(){
+                                                      var y =0;
+                                                      var x =widget.billTextModel.serialMap[index].
+                                                      substring(0,  (widget.billTextModel.serialMap[index].indexOf('/'))) ;
+                                                      y=int.parse(x);
+                                                      print(x);
+                                                      print(y);
+
+                                                      widget.billTextModel.serialMap.removeRange(index, index+y+1);
+                                                      Navigator.of(context).pop();
+                                                      setState(() {
+
+                                                      });
+                                                    } , child: Text('نعم', style:
+                                                    TextStyle(color: Colors.white , fontSize: 30 ,
+                                                        fontWeight: FontWeight.bold))),
+                                                    TextButton(onPressed: (){
+                                                      Navigator.of(context).pop();
+                                                    }, child: Text('لا' ,
+                                                        style:
+                                                        TextStyle(color: Colors.white , fontSize: 30 ,
+                                                            fontWeight: FontWeight.bold)))
+                                                  ],
+                                                  content: Directionality(
+                                                    textDirection: TextDirection.rtl,
+                                                    child: Text('هل تريد حذف الصنف بقائمة السيريال التابعة له', style:
+                                                    TextStyle(color: Colors.white , fontSize: 30 ,
+                                                        fontWeight: FontWeight.bold),
+                                                    ),
+                                                  ),
+                                                  backgroundColor: Colors.green,
+                                                );
+                                              });
+
+                                            }
+                                            else {
+
+                                              var u=widget.billTextModel.serialMap[index].substring(0,
+                                                widget.billTextModel.serialMap[index].indexOf(',') ,
+                                              );
+                                              widget.billTextModel.serialMap.forEach((element) {
+                                                if(element.contains('sanf') && element.contains(u)){
+                                                  print('element1 is sanf??? $element');
+                                                  var y =0;
+                                                  var x =element.
+                                                  substring(0,  (element.indexOf('/'))) ;
+
+                                                  y=int.parse(x);
+                                                  print('xxx $x');
+                                                  print('yyyy $y');
+                                                  var pos = widget.billTextModel.serialMap.indexOf(element);
+                                                  var newSanf= element.substring(1);
+                                                  print('newSanf $newSanf');
+                                                  var secondSanf= '${y-1}$newSanf';
+                                                  print('secondSanf $secondSanf');
+                                                  widget.billTextModel.serialMap[pos]=secondSanf;
+
+                                                  print('element1 $element');
+                                                }
+
+                                              });
+                                              widget.billTextModel.serialMap.removeAt(index);
+                                              // sanfList22.removeAt(index);
+                                              setState(() {
+
+                                              });
+                                            }
+
+
+
+
+                                          },
+                                          icon: Icon(Icons.delete)),
+                                    ),
+                                    IconButton(
+                                        onPressed: () async {
+                                          var x ='';
+                                          String barcodeScanRes;
+                                          try{
+                                            barcodeScanRes = await FlutterBarcodeScanner.scanBarcode('#ff6666',
+                                                'الغاء',
+                                                true,
+                                                ScanMode.BARCODE);
+                                            print(barcodeScanRes);
+
+                                          }on PlatformException  {
+                                            barcodeScanRes='فشل المسح';
+                                          }if(!mounted)return ;
+                                          // if(widget.billTextModel.serialMap[index].contains("sanf")){
+                                          //   widget.billTextModel.serialMap[index]="sanf ${barcodeScanRes}";
+                                          // }if(!widget.billTextModel.serialMap[index].contains("sanf")){
+                                          //   widget.billTextModel.serialMap[index]=barcodeScanRes;
+                                          // }
+                                          if(widget.billTextModel.serialMap[index].contains("sanf")){
+                                            var  x=widget.billTextModel.serialMap[index].substring(4 ,
+                                                widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                            // widget.billTextModel.serialMap.forEach((element) {
+                                            //   if(element.contains(x)){
+                                            //     element='${barcodeScanRes}, $element' ;
+                                            //   }
+                                            // });
+                                            print('xanf xxx $x');
+                                            widget.billTextModel.serialMap[index]="sanf ${barcodeScanRes}";
+                                            widget.billTextModel.serialMap.forEach((element) {
+                                              if(element.contains(x)){
+                                                element.substring(0 ,
+                                                    widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                                element='${barcodeScanRes}, $element' ;
+                                              }
+                                            });
+
+                                          }
+                                          if(!widget.billTextModel.serialMap[index].contains("sanf")){
+                                            var x=widget.billTextModel.serialMap[index].substring(0 ,
+                                                widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                            widget.billTextModel.serialMap[index]='$x $barcodeScanRes';
+                                          }
+                                          setState(() {
+
+                                          });
+                                        },
+                                        icon: Icon(Icons.scanner)),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
+                            );
+                          }
+
                         }
-                        return Container(
+                        if(widget.billTextModel.serialMap[index].contains("sanf"))
+                         {
+                           return Stack(
+                             alignment: AlignmentDirectional.bottomEnd,
+                             children: [
+                               Container(
+                                 height: 100,
+
+                                 key: ObjectKey(widget.billTextModel.serialMap[index]),
+                                  margin: EdgeInsets.only(right :20,left: 10,top: 10,bottom: 10),
+                                 width: width*75/100,
+                                 decoration: BoxDecoration(
+                                     color: Colors.green,
+                                     border: Border.all(
+                                       color: Colors.green,
+                                     ),
+                                     borderRadius: BorderRadius.all(Radius.circular(50))
+                                 ),
+                                 child: Directionality(
+                                   textDirection: TextDirection.rtl,
+                                   child: Container(
+                                     width: width*70/100,
+                                     // margin: EdgeInsets.only(bottom: 5),
+                                     child: TextFormField(
+                                       cursorColor: Colors.white,
+                                       onTapOutside: (event){
+                                         // FocusManager.instance.primaryFocus?.unfocus();
+                                         FocusScope.of(context).unfocus();
+                                       },
+                                       textInputAction: TextInputAction.next,
+                                       focusNode: focusList[index],
+                                       onFieldSubmitted: (v){
+                                         focusList[index+1].requestFocus();
+                                       },
+                                       initialValue:widget.billTextModel.serialMap[index].contains('sanf') ?
+                                       widget.billTextModel.serialMap[index].substring(7).trim():
+                                       widget.billTextModel.serialMap[index].substring(widget.billTextModel.serialMap[index].indexOf(',')+1).trim(),
+                                       decoration: InputDecoration(
+
+                                         focusedBorder: OutlineInputBorder(
+                                           borderSide:
+                                           BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
+                                           borderRadius: BorderRadius.circular(50.0),
+                                         ),
+                                         filled: true,
+                                         alignLabelWithHint: false,
+                                         label: Text((widget.billTextModel.serialMap[index].contains('/sanf'))?
+                                         'كود الصنف':'سيريال ',
+                                           style: TextStyle(fontWeight: FontWeight.bold ,
+                                               color:widget.billTextModel.serialMap[index].contains('/sanf') ?
+                                               Colors.black:
+                                               Colors.black), textAlign: TextAlign.right,),
+                                         fillColor: widget.billTextModel.serialMap[index].contains('/sanf') ?
+                                         Colors.green :
+                                         Colors.black.withOpacity(0.1),
+                                         enabledBorder: OutlineInputBorder(
+                                           borderSide:
+                                           BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
+                                           borderRadius: BorderRadius.circular(50.0),
+                                         ),
+                                       ),
+                                       validator: (value){
+                                         if(value!.isEmpty ||value.length<1)
+                                         {return ' please Enter Valid value' ;}
+                                         else return null ;
+
+                                       },
+
+                                       onChanged: (value){
+
+                                         if(value!.isNotEmpty && value.length>0){
+                                           // var x=sanfList22[index].substring(0 , sanfList22[index].indexOf(',')+1);
+                                           // sanfList22[index]= '$x $value';
+                                           var x=widget.billTextModel.serialMap[index].substring(0 ,
+                                               widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                           // widget.billTextModel.serialMap[index]= '$x $value';
+                                           // print('onchangedsanfList22 $sanfList22');
+                                           widget.billTextModel.serialMap[index]='$x $value';
+                                           // if(widget.billTextModel.serialMap[index].contains("sanf")){
+                                           //   widget.billTextModel.serialMap[index]="$x ${value}";
+                                           // }
+                                           // if(!widget.billTextModel.serialMap[index].contains("sanf")){
+                                           //   widget.billTextModel.serialMap[index]='$x $value'
+                                           //   ;
+                                           // }
+                                         }
+
+                                         if(value.trim().characters.length==13)
+                                         {
+                                         focusNode: focus;
+                                         // TextInputAction.next ;
+                                         FocusScope.of(context).requestFocus(focusList[index+1]);
+                                         }
+                                       },
+
+                                       onSaved: (v){
+                                         if(v!.trim().isNotEmpty && v.trim().length>0){
+                                           // var y =0;
+                                           // var p =widget.billTextModel.serialMap[index].
+                                           // substring(0,  (widget.billTextModel.serialMap[index].indexOf('/'))) ;
+                                           // print('pppp$p');
+                                           // var t =widget.billTextModel.serialMap[index].substring
+                                           //   (widget.billTextModel.serialMap[index].indexOf(',')+1
+                                           //   );
+                                           // print('ttt$t');
+                                           // y=int.parse(p);
+                                           // print(p);
+                                           // print(y);
+                                           // List<String> serials =[];
+                                           // List<String> serials2 =[];
+                                           //
+                                           // serials = widget.billTextModel.serialMap.getRange(index+1, index+y+1).toList();
+                                           // print('serials $serials');
+                                           // serials.forEach((element) {
+                                           //   var  v=element.substring(7).trim() ;
+                                           //   print('vvvv$v');
+                                           //   element='$v, ' ;
+                                           //   print('element serial $element');
+                                           //   serials2.add('$t $v');
+                                           //   // var x=widget.billTextModel.serialMap[index].substring(7).trim() ;
+                                           //
+                                           // });
+                                           // print('serials2 $serials2');
+                                           // // widget.billTextModel.serialMap.replaceRange(start, end, replacements)
+                                           // widget.billTextModel.serialMap.replaceRange(index, index+y, serials.toList());
+                                           // Navigator.of(context).pop();
+                                           // var x=sanfList22[index].substring(0 ,
+                                           //     sanfList22[index].indexOf(',')+1);
+                                           // sanfList22[index]= '$x $v';
+                                           var ooo=widget.billTextModel.serialMap[index].substring(0 ,
+                                               widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                           widget.billTextModel.serialMap[index]="${ooo.trim()} ${v.trim()}";
+                                           // widget.billTextModel.serialMap[index]= '$x $v';
+                                           // if(widget.billTextModel.serialMap[index].contains("sanf")){
+                                           //   widget.billTextModel.serialMap[index]="$x ${v}";
+                                           // }
+                                           // if(!widget.billTextModel.serialMap[index].contains("sanf")){
+                                           //   widget.billTextModel.serialMap[index]='$x $v'
+                                           //   ;
+                                           // }
+                                           serialMap['${index}']=v!;
+                                         }
+                                       },
+                                     ),
+                                   ),
+                                 ),
+                               ),
+                               // SizedBox(height: 5,),
+                               Padding(
+                                 padding: const EdgeInsets.all(8.0),
+                                 child: Center(
+                                   child: Container(
+
+                                     decoration: BoxDecoration(
+                                         // color: Colors.white,
+                                         border: Border.all(
+                                           color: Colors.green,
+                                         ),
+                                         borderRadius: BorderRadius.all(Radius.circular(50))
+                                     ),
+                                     child: Row(
+
+                                       mainAxisSize: MainAxisSize.max,
+                                       mainAxisAlignment:MainAxisAlignment.spaceAround ,
+
+                                       children: [
+                                         IconButton(
+                                             onPressed: () async {
+                                               String x='';
+                                               String barcodeScanRes;
+
+                                               try{
+                                                 barcodeScanRes = await FlutterBarcodeScanner.scanBarcode('#ff6666',
+                                                     'الغاء',
+                                                     true,
+                                                     ScanMode.BARCODE);
+                                                 print(barcodeScanRes);
+
+                                               }on PlatformException  {
+                                                 barcodeScanRes='فشل المسح';
+                                               }if(!mounted)return ;
+                                               if(widget.billTextModel.serialMap[index].contains("sanf")){
+                                                 sanfXXX=widget.billTextModel.serialMap[index].substring(4 ,
+                                                     widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                                 print('xxx $x');
+
+
+                                                 widget.billTextModel.serialMap[index]="sanf ${barcodeScanRes}";
+                                                 widget.billTextModel.serialMap.forEach((element) {
+                                                   if(element.contains(x)){
+                                                     element.substring(0 ,
+                                                         widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                                     element='${barcodeScanRes}, $element' ;
+                                                   }
+                                                 });
+
+                                               }
+                                               if(!widget.billTextModel.serialMap[index].contains("sanf")){
+                                                 var x=widget.billTextModel.serialMap[index].substring(0 ,
+                                                     widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                                 widget.billTextModel.serialMap[index]='$x $barcodeScanRes';
+                                               }
+                                               setState(() {
+
+                                               });
+                                             },
+                                             icon: Icon(Icons.scanner ,color: Colors.white,)),
+                                         Container(
+                                           width: width*10/100,
+                                           child: IconButton(
+                                               onPressed: (){
+
+                                                 // widget.billTextModel.serialMap.removeAt(index);
+                                                 // if(itemsList[index].contains('sanf')==true){
+                                                 //
+                                                 //   itemsList.removeWhere((element) => element.contains(
+                                                 //       '${itemsList[index]
+                                                 //       }'));
+                                                 //   setState(() {
+                                                 //
+                                                 //   });
+                                                 // }
+
+
+                                                 if(widget.billTextModel.serialMap[index].contains("sanf")){
+
+                                                   showDialog(context: context, builder:
+                                                       (context){
+                                                     return AlertDialog(
+                                                       actions: [
+                                                         TextButton(onPressed:(){
+                                                           var y =0;
+                                                           var x =widget.billTextModel.serialMap[index].
+                                                           substring(0,  (widget.billTextModel.serialMap[index].indexOf('/'))) ;
+                                                           y=int.parse(x);
+                                                           print(x);
+                                                           print(y);
+
+                                                           widget.billTextModel.serialMap.removeRange(index, index+y+1);
+                                                           Navigator.of(context).pop();
+                                                           setState(() {
+
+                                                           });
+                                                         } , child: Text('نعم', style:
+                                                         TextStyle(color: Colors.white , fontSize: 30 ,
+                                                             fontWeight: FontWeight.bold))),
+                                                         TextButton(onPressed: (){
+                                                           Navigator.of(context).pop();
+                                                         }, child: Text('لا' ,
+                                                             style:
+                                                             TextStyle(color: Colors.white , fontSize: 30 ,
+                                                                 fontWeight: FontWeight.bold)))
+                                                       ],
+                                                       content: Directionality(
+                                                         textDirection: TextDirection.rtl,
+                                                         child: Text('هل تريد حذف الصنف بقائمة السيريال التابعة له', style:
+                                                         TextStyle(color: Colors.white , fontSize: 30 ,
+                                                             fontWeight: FontWeight.bold),
+                                                         ),
+                                                       ),
+                                                       backgroundColor: Colors.green,
+                                                     );
+                                                   });
+
+                                                 }
+                                                 else {
+
+                                                   var u=widget.billTextModel.serialMap[index].substring(0,
+                                                     widget.billTextModel.serialMap[index].indexOf(',') ,
+                                                   );
+                                                   widget.billTextModel.serialMap.forEach((element) {
+                                                     if(element.contains('sanf') && element.contains(u)){
+                                                       print('element1 is sanf??? $element');
+                                                       var y =0;
+                                                       var x =element.
+                                                       substring(0,  (element.indexOf('/'))) ;
+
+                                                       y=int.parse(x);
+                                                       print('xxx $x');
+                                                       print('yyyy $y');
+                                                       var pos = widget.billTextModel.serialMap.indexOf(element);
+                                                       var newSanf= element.substring(1);
+                                                       print('newSanf $newSanf');
+                                                       var secondSanf= '${y-1}$newSanf';
+                                                       print('secondSanf $secondSanf');
+                                                       widget.billTextModel.serialMap[pos]=secondSanf;
+
+                                                       print('element1 $element');
+                                                     }
+
+                                                   });
+                                                   widget.billTextModel.serialMap.removeAt(index);
+                                                   // sanfList22.removeAt(index);
+                                                   setState(() {
+
+                                                   });
+                                                 }
+
+
+
+
+                                               },
+                                               icon: Icon(Icons.delete , color: Colors.white,)),
+                                         ),
+
+                                         TextButton(onPressed: () {
+                                           var x=widget.billTextModel.serialMap[index].substring(7).trim() ;
+
+                                           widget.billTextModel.serialMap.insert(index+1,'$x, ');
+                                           setState(() {
+
+                                           });
+                                         },
+                                             child: Text('اضافة سيريال' ,style: TextStyle(color: Colors.white , fontWeight: FontWeight.bold),))
+                                       ],
+                                     ),
+                                     // color: Colors.green[50],
+                                     width: width*60/100,
+                                     margin: EdgeInsets.all(5),
+                                   ),
+                                 ),
+                               ),
+                             ]
+                           ) ;
+                         }
+                        else return Container(
                           key: ObjectKey(widget.billTextModel.serialMap[index]),
                           margin: EdgeInsets.all(5),
                           width: width*80/100,
@@ -999,12 +1762,20 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Container(
-                                    width: width*60/100,
+                                    width: width*50/100,
                                   child: TextFormField(
+                                    onTapOutside: (event){
+                                      // FocusManager.instance.primaryFocus?.unfocus();
+                                      FocusScope.of(context).unfocus();
+                                    },
                                     textInputAction: TextInputAction.next,
+                                    focusNode: focusList[index],
+                                    onFieldSubmitted: (v){
+                                      focusList[index+1].requestFocus();
+                                    },
                                     initialValue:widget.billTextModel.serialMap[index].contains('sanf') ?
-                                    widget.billTextModel.serialMap[index].substring(5):
-                                    widget.billTextModel.serialMap[index].substring(widget.billTextModel.serialMap[index].indexOf(',')+1),
+                                    widget.billTextModel.serialMap[index].substring(7).trim():
+                                    widget.billTextModel.serialMap[index].substring(widget.billTextModel.serialMap[index].indexOf(',')+1).trim(),
                                     decoration: InputDecoration(
 
                                       focusedBorder: OutlineInputBorder(
@@ -1014,13 +1785,13 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
                                       ),
                                       filled: true,
                                       alignLabelWithHint: false,
-                                      label: Text((widget.billTextModel.serialMap[index].startsWith('sanf'))?
+                                      label: Text((widget.billTextModel.serialMap[index].contains('/sanf'))?
                                       'كود الصنف':'سيريال ',
                                         style: TextStyle(fontWeight: FontWeight.bold ,
-                                            color:widget.billTextModel.serialMap[index].startsWith('sanf') ?
+                                            color:widget.billTextModel.serialMap[index].contains('/sanf') ?
                                             Colors.black:
                                             Colors.black), textAlign: TextAlign.right,),
-                                      fillColor: widget.billTextModel.serialMap[index].startsWith('sanf') ?
+                                      fillColor: widget.billTextModel.serialMap[index].contains('/sanf') ?
                                       Colors.green :
                                       Colors.black.withOpacity(0.1),
                                       enabledBorder: OutlineInputBorder(
@@ -1029,74 +1800,204 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
                                         borderRadius: BorderRadius.circular(50.0),
                                       ),
                                     ),
-                                    focusNode: focusList[index],
+                                    validator: (value){
+                                      if(value!.isEmpty ||value.length<1)
+                                      {return ' please Enter Valid value' ;}
+                                      else return null ;
 
-                                    onChanged: (value){
-
-                                      if(value!.isNotEmpty && value.length>0){
-                                        // var x=sanfList22[index].substring(0 , sanfList22[index].indexOf(',')+1);
-                                        // sanfList22[index]= '$x $value';
-                                        var x=widget.billTextModel.serialMap[index].substring(0 ,
-                                            widget.billTextModel.serialMap[index].indexOf(',')+1);
-                                        widget.billTextModel.serialMap[index]= '$x $value';
-                                        print('onchangedsanfList22 $sanfList22');
-                                        // if(widget.billTextModel.serialMap[index].contains("sanf")){
-                                        //   widget.billTextModel.serialMap[index]="sanf ${value}";
-                                        // }
-                                        // if(!widget.billTextModel.serialMap[index].contains("sanf")){
-                                        //   widget.billTextModel.serialMap[index]=value;}
-                                      }
-
-                                      if(value.trim().characters.length==13)
-                                      {
-                                      focusNode: focus;
-                                      // TextInputAction.next ;
-                                      FocusScope.of(context).requestFocus(focusList[index+1]);
-                                      }
+                                    },
+                                    onChanged: (v){
+                                      print('change $v');
+                                      print(widget.billTextModel.serialMap);
                                     },
 
+
+                                    // onChanged: (value){
+                                    //
+                                    //   if(value!.isNotEmpty && value.length>0){
+                                    //     // var x=sanfList22[index].substring(0 , sanfList22[index].indexOf(',')+1);
+                                    //     // sanfList22[index]= '$x $value';
+                                    //     var x=widget.billTextModel.serialMap[index].substring(0 ,
+                                    //         widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                    //     // widget.billTextModel.serialMap[index]= '$x $value';
+                                    //     // print('onchangedsanfList22 $sanfList22');
+                                    //     if(widget.billTextModel.serialMap[index].contains("sanf")){
+                                    //       widget.billTextModel.serialMap[index]="$x ${value}";
+                                    //     }
+                                    //     if(!widget.billTextModel.serialMap[index].contains("sanf")){
+                                    //       widget.billTextModel.serialMap[index]='$x $value'
+                                    //       ;
+                                    //     }
+                                    //   }
+                                    //
+                                    //   if(value.trim().characters.length==13)
+                                    //   {
+                                    //   focusNode: focus;
+                                    //   // TextInputAction.next ;
+                                    //   FocusScope.of(context).requestFocus(focusList[index+1]);
+                                    //   }
+                                    // },
+
                                       onSaved: (v){
-                                        if(v!.isNotEmpty && v.length>0){
+                                        if(v!.trim().isNotEmpty && v.trim().length>0){
                                           // var x=sanfList22[index].substring(0 ,
                                           //     sanfList22[index].indexOf(',')+1);
                                           // sanfList22[index]= '$x $v';
                                           var x=widget.billTextModel.serialMap[index].substring(0 ,
                                               widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                          widget.billTextModel.serialMap[index]="${x.trim()} ${v.trim()}";
+
                                           // widget.billTextModel.serialMap[index]= '$x $v';
-                                          if(widget.billTextModel.serialMap[index].contains("sanf")){
-                                            widget.billTextModel.serialMap[index]="sanf $x ${v}";
-                                          }
-                                          if(!widget.billTextModel.serialMap[index].contains("sanf")){
-                                            widget.billTextModel.serialMap[index]='$x $v'
-                                            ;}
+                                          // if(widget.billTextModel.serialMap[index].contains("sanf")){
+                                          //   widget.billTextModel.serialMap[index]="$x ${v}";
+                                          // }
+                                          // if(!widget.billTextModel.serialMap[index].contains("sanf")){
+                                          //   widget.billTextModel.serialMap[index]='$x $v'
+                                          //   ;
+                                          // }
                                           serialMap['${index}']=v!;
                                         }
                                       },
                                   ),
                                 ),
                                 Container(
-                                  width: width*20/100,
-                                  child: IconButton(onPressed: (){
+                                  width: width*10/100,
+                                  child: IconButton(
+                                      onPressed: (){
 
-                                    // if(itemsList[index].contains('sanf')==true){
-                                    //
-                                    //   itemsList.removeWhere((element) => element.contains(
-                                    //       '${itemsList[index]
-                                    //       }'));
-                                    //   setState(() {
-                                    //
-                                    //   });
-                                    // }
-                                      widget.billTextModel.serialMap.removeAt(index);
-                                     sanfList22.removeAt(index);
+                                        // widget.billTextModel.serialMap.removeAt(index);
+                                        // if(itemsList[index].contains('sanf')==true){
+                                        //
+                                        //   itemsList.removeWhere((element) => element.contains(
+                                        //       '${itemsList[index]
+                                        //       }'));
+                                        //   setState(() {
+                                        //
+                                        //   });
+                                        // }
+
+
+                                        if(widget.billTextModel.serialMap[index].contains("sanf")){
+
+                                          showDialog(context: context, builder:
+                                              (context){
+                                            return AlertDialog(
+                                              actions: [
+                                                TextButton(onPressed:(){
+                                                  var y =0;
+                                                  var x =widget.billTextModel.serialMap[index].
+                                                  substring(0,  (widget.billTextModel.serialMap[index].indexOf('/'))) ;
+                                                  y=int.parse(x);
+                                                  print(x);
+                                                  print(y);
+
+                                                  widget.billTextModel.serialMap.removeRange(index, index+y+1);
+                                                  Navigator.of(context).pop();
+                                                  setState(() {
+
+                                                  });
+                                                } , child: Text('نعم', style:
+                                                TextStyle(color: Colors.white , fontSize: 30 ,
+                                                    fontWeight: FontWeight.bold))),
+                                                TextButton(onPressed: (){
+                                                  Navigator.of(context).pop();
+                                                }, child: Text('لا' ,
+                                                    style:
+                                                    TextStyle(color: Colors.white , fontSize: 30 ,
+                                                        fontWeight: FontWeight.bold)))
+                                              ],
+                                              content: Directionality(
+                                                textDirection: TextDirection.rtl,
+                                                child: Text('هل تريد حذف الصنف بقائمة السيريال التابعة له', style:
+                                                TextStyle(color: Colors.white , fontSize: 30 ,
+                                                    fontWeight: FontWeight.bold),
+                                                ),
+                                              ),
+                                              backgroundColor: Colors.green,
+                                            );
+                                          });
+
+                                        }
+                                        else {
+
+                                          var u=widget.billTextModel.serialMap[index].substring(0,
+                                            widget.billTextModel.serialMap[index].indexOf(',') ,
+                                          );
+                                          widget.billTextModel.serialMap.forEach((element) {
+                                            if(element.contains('sanf') && element.contains(u)){
+                                              print('element1 is sanf??? $element');
+                                              var y =0;
+                                              var x =element.
+                                              substring(0,  (element.indexOf('/'))) ;
+
+                                              y=int.parse(x);
+                                              print('xxx $x');
+                                              print('yyyy $y');
+                                              var pos = widget.billTextModel.serialMap.indexOf(element);
+                                              var newSanf= element.substring(1);
+                                              print('newSanf $newSanf');
+                                              var secondSanf= '${y-1}$newSanf';
+                                              print('secondSanf $secondSanf');
+                                              widget.billTextModel.serialMap[pos]=secondSanf;
+
+                                              print('element1 $element');
+                                            }
+
+                                          });
+                                          widget.billTextModel.serialMap.removeAt(index);
+                                          // sanfList22.removeAt(index);
+                                          setState(() {
+
+                                          });
+                                        }
+
+
+
+
+                                      },
+                                      icon: Icon(Icons.delete)),
+                                ),
+                                IconButton(
+                                    onPressed: () async {
+                                      String x='';
+                                      String barcodeScanRes;
+
+                                      try{
+                                        barcodeScanRes = await FlutterBarcodeScanner.scanBarcode('#ff6666',
+                                            'الغاء',
+                                            true,
+                                            ScanMode.BARCODE);
+                                        print(barcodeScanRes);
+
+                                      }on PlatformException  {
+                                        barcodeScanRes='فشل المسح';
+                                      }if(!mounted)return ;
+                                      if(widget.billTextModel.serialMap[index].contains("sanf")){
+                                        sanfXXX=widget.billTextModel.serialMap[index].substring(4 ,
+                                            widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                        print('xxx $x');
+
+
+                                        widget.billTextModel.serialMap[index]="sanf ${barcodeScanRes}";
+                                        widget.billTextModel.serialMap.forEach((element) {
+                                          if(element.contains(x)){
+                                            element.substring(0 ,
+                                                widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                            element='${barcodeScanRes}, $element' ;
+                                          }
+                                        });
+
+                                      }
+                                      if(!widget.billTextModel.serialMap[index].contains("sanf")){
+                                        var x=widget.billTextModel.serialMap[index].substring(0 ,
+                                            widget.billTextModel.serialMap[index].indexOf(',')+1);
+                                        widget.billTextModel.serialMap[index]='$x $barcodeScanRes';
+                                      }
                                       setState(() {
 
                                       });
-
-
-                                  },
-                                      icon: Icon(Icons.delete)),
-                                ),
+                                    },
+                                    icon: Icon(Icons.scanner)),
                               ],
                             ),
                           ),
