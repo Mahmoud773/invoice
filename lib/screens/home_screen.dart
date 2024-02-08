@@ -7,6 +7,7 @@ import 'package:invoice/screens/edit_bill_screen.dart';
 import 'package:invoice/screens/grid_page.dart';
 
 import '../dummy_data/dummy_excell_screen.dart';
+import '../widget/custom_page_route.dart';
 import 'add_fatora.dart';
 import 'package:path/path.dart' as pathP;
 import 'package:sqflite/sqflite.dart' as sql;
@@ -204,10 +205,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
   final List<String> billItemsList=[];
-  void _addFatora(){
-    Navigator.push(context, MaterialPageRoute(builder:(context)
-    {return AddFatoraWithItems(sharedPreferences: widget.sharedPreferences,);}
-    ));
+  void _addFatora(BuildContext context){
+    // Navigator.push(context ,  MaterialPageRoute( builder:(context)
+    // {
+    //   return AddFatoraWithItems(sharedPreferences: widget.sharedPreferences,);}
+    // ) , );
+
+    myNavigator( context ,AddFatoraWithItems(sharedPreferences: widget.sharedPreferences,));
   }
   @override
   void initState() {
@@ -393,7 +397,9 @@ class _HomeScreenState extends State<HomeScreen> {
         //   ],
         // ),
         floatingActionButton:FloatingActionButton(backgroundColor: Colors.green,
-          onPressed: _addFatora ,
+          onPressed: (){
+            _addFatora(context);
+          },
         child: Icon(Icons.add) , ) ,
       ),
     );

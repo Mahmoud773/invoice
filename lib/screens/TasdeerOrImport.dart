@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../dummy_data/Bill_Model.dart';
 import 'grid_page.dart';
+import 'package:share_plus/share_plus.dart';
 
 
  class TasdeerOrImport extends StatefulWidget {
@@ -79,23 +80,43 @@ import 'grid_page.dart';
          backgroundColor: Colors.green,
        ),
        backgroundColor: Colors.green[100],
-       body: Center(
-         child: SingleChildScrollView(
+       body: SingleChildScrollView(
 
+         child: Padding(
+           padding: const EdgeInsets.all(20.0),
            child: Column(
              mainAxisSize: MainAxisSize.max,
              mainAxisAlignment: MainAxisAlignment.center,
              children: List.generate( myBills.length, (index) {
-               return MaterialButton(
-               onPressed: (){
+               return Container(
+                 margin: EdgeInsets.only(bottom: 15),
+                 width: MediaQuery.of(context).size.width*90/100,
+                 child: Center(
+                   child: Row(
+                     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                     children: [
+                       MaterialButton(
+                       onPressed: (){
            _openFile(myBills[index].path);
            },
            child: Text(
            'فتح ملف الفاتورة باسم ${myBills[index].billNumber}',
-           style: TextStyle(color: Colors.white , fontSize: 20),
+           style: TextStyle(color: Colors.white , fontSize: 18),
            ),
            color: Colors.green,
-           );
+           ),
+                       IconButton(onPressed: () async {
+                         final result = await
+                         Share.shareXFiles([XFile('${myBills[index].path}')], text: 'Great picture');
+
+                         if (result.status == ShareResultStatus.success) {
+                           print('Thank you for sharing the picture!');
+                         }
+                       }, icon: Icon(Icons.share))
+                     ],
+                   ),
+                 ),
+               );
            }),
            ),
          ),

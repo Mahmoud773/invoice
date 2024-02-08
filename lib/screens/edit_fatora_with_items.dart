@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import '../dummy_data/file_storage.dart';
+import '../widget/custom_page_route.dart';
 
 class EditFatoraWithItems extends StatefulWidget {
   SharedPreferences? sharedPreferences;
@@ -149,12 +150,14 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
         content: Text('تم حفظ الفاتورة'
           , style: TextStyle(color: Colors.white),) ,
       ));
-      Navigator.pushReplacement(context, MaterialPageRoute(builder:
-          (context) {
-        return HomeScreen( sharedPreferences: widget.sharedPreferences,
-          backAfterEdit: true,billLList: [],);
-      }
-      ));
+      myNavigatorWithNoreturnToUp(context , HomeScreen( sharedPreferences: widget.sharedPreferences,
+         backAfterEdit: true,billLList: [],));
+      // Navigator.pushReplacement(context, MaterialPageRoute(builder:
+      //     (context) {
+      //   return HomeScreen( sharedPreferences: widget.sharedPreferences,
+      //     backAfterEdit: true,billLList: [],);
+      // }
+      // ));
     });
 
   }
@@ -595,44 +598,46 @@ class _EditFatoraWithItemsState extends State<EditFatoraWithItems> {
                                                         child: Column(
                                                           crossAxisAlignment: CrossAxisAlignment.end,
                                                           children: [
-                                                            Container(
-                                                              margin: EdgeInsets.only(right: 20),
-                                                              width: width*45/100,
-                                                              child: Directionality(
-                                                                textDirection: TextDirection.rtl,
-                                                                child: TextFormField(
-                                                                  textInputAction: TextInputAction.next,
-                                                                  focusNode: focusSerialNumber,
-                                                                  decoration: InputDecoration(
-                                                                    focusedBorder: OutlineInputBorder(
-                                                                      borderSide:
-                                                                      BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
-                                                                      borderRadius: BorderRadius.circular(50.0),
+                                                            Center(
+                                                              child: Container(
+                                                                margin: EdgeInsets.only(bottom: 10),
+                                                                width: width*60/100,
+                                                                child: Directionality(
+                                                                  textDirection: TextDirection.rtl,
+                                                                  child: TextFormField(
+                                                                    textInputAction: TextInputAction.next,
+                                                                    focusNode: focusSerialNumber,
+                                                                    decoration: InputDecoration(
+                                                                      focusedBorder: OutlineInputBorder(
+                                                                        borderSide:
+                                                                        BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
+                                                                        borderRadius: BorderRadius.circular(50.0),
+                                                                      ),
+                                                                      filled: true,
+                                                                      alignLabelWithHint: false,
+                                                                      label: Text('عدد السيريال',
+                                                                        style: TextStyle(fontWeight: FontWeight.bold ,color:
+                                                                        Colors.black), textAlign: TextAlign.right,),
+                                                                      fillColor: Colors.black.withOpacity(0.1),
+                                                                      enabledBorder: OutlineInputBorder(
+                                                                        borderSide:
+                                                                        BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
+                                                                        borderRadius: BorderRadius.circular(50.0),
+                                                                      ),
                                                                     ),
-                                                                    filled: true,
-                                                                    alignLabelWithHint: false,
-                                                                    label: Text('عدد السيريال',
-                                                                      style: TextStyle(fontWeight: FontWeight.bold ,color:
-                                                                      Colors.black), textAlign: TextAlign.right,),
-                                                                    fillColor: Colors.black.withOpacity(0.1),
-                                                                    enabledBorder: OutlineInputBorder(
-                                                                      borderSide:
-                                                                      BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
-                                                                      borderRadius: BorderRadius.circular(50.0),
-                                                                    ),
-                                                                  ),
-                                                                  onChanged: (value){
-                                                                    noOfSerials1=int.parse(value);
-                                                                    for(var i=0 ; i <noOfSerials1 ;i++){
-                                                                      focusListDialog.insert(i, FocusNode());
-                                                                      scannerList.insert(i, '');
-                                                                      scannerTextEditControllerList.insert(i, TextEditingController());
-                                                                      scannerTextEditControllerList[i].text='';
-                                                                    }
-                                                                    setState(() {
+                                                                    onChanged: (value){
+                                                                      noOfSerials1=int.parse(value);
+                                                                      for(var i=0 ; i <noOfSerials1 ;i++){
+                                                                        focusListDialog.insert(i, FocusNode());
+                                                                        scannerList.insert(i, '');
+                                                                        scannerTextEditControllerList.insert(i, TextEditingController());
+                                                                        scannerTextEditControllerList[i].text='';
+                                                                      }
+                                                                      setState(() {
 
-                                                                    });
-                                                                  },
+                                                                      });
+                                                                    },
+                                                                  ),
                                                                 ),
                                                               ),
                                                             ),

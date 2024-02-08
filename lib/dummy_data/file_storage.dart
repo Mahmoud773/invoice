@@ -1,5 +1,6 @@
 
 import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -8,16 +9,40 @@ import 'package:permission_handler/permission_handler.dart';
 class FileStorage {
   static late    String filePath ;
   static Future<String> getExternalDocumentPath() async {
+
+
+    //check android device info
+    AndroidDeviceInfo build= await DeviceInfoPlugin().androidInfo;
     // To check whether permission is given for this app or not.
+    if(build.version.sdkInt >=30){
+     var re = await Permission.manageExternalStorage.request();
+    }
+
     var status = await Permission.storage.status;
+
     if (!status.isGranted) {
       // If not we will ask for permission first
       await Permission.storage.request();
     }
+
+    var status1 = await Permission.manageExternalStorage.status;
+    if (!status1.isGranted) {
+      // If not we will ask for permission first
+      await Permission.manageExternalStorage.request();
+    }
     Directory _directory = Directory("");
     if (Platform.isAndroid) {
       // Redirects it to download folder in android
-      _directory = Directory("/storage/emulated/0/Download");
+      Directory? result = await getExternalStorageDirectory();
+      if(result != null){
+        _directory = Directory(result.path);
+      }
+      if(result == null ){
+         result =await await getApplicationSupportDirectory();
+        _directory = Directory(result.path);
+      }
+      // _directory = Directory("/storage/emulated/0/Download");
+
     } else {
       _directory = await getApplicationDocumentsDirectory();
     }

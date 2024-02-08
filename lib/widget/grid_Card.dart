@@ -6,7 +6,7 @@ import 'package:invoice/widget/grid_photo.dart';
 
 Widget buildGridImage(int ind){
   List<GridPhoto> gridItems=[
-   GridPhoto(path: 'assets/images/txt.png', title: 'التصدير والاستيراد لتكست') ,
+   GridPhoto(path: 'assets/images/txt.png', title: 'التصدير والاستيراد ') ,
     GridPhoto(path: 'assets/images/shop.webp', title: 'الفواتير') ,
     GridPhoto(path: 'assets/images/recycle.jpg', title: 'تصفير الفواتير') ,
     GridPhoto(path: 'assets/images/exit.jpg', title: 'خروج') ,

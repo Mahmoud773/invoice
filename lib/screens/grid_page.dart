@@ -7,6 +7,7 @@ import 'package:invoice/screens/Tasfeer.dart';
 import 'package:invoice/screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../widget/custom_page_route.dart';
 import '../widget/grid_Card.dart';
 
 class GridPage extends StatefulWidget {
@@ -71,21 +72,25 @@ class _GridPageState extends State<GridPage> {
                   itemBuilder: (context , ind) {
                     return InkWell(onTap: (){
                       if(ind==0){
-                        Navigator.push(context, MaterialPageRoute(builder:(context)
-                        {return TasdeerOrImport(sharedPreferences: widget.sharedPreferences);}
-                        ));
+                        myNavigator(context ,TasdeerOrImport(sharedPreferences: widget.sharedPreferences));
+
+                        // Navigator.push(context, MaterialPageRoute(builder:(context)
+                        // {return TasdeerOrImport(sharedPreferences: widget.sharedPreferences);}
+                        // ));
 
                       }
                       if(ind==1){
-                        Navigator.push(context, MaterialPageRoute(builder:(context)
-                        {return HomeScreen(sharedPreferences: widget.sharedPreferences, billLList: [],);}
-                        ));
+                        myNavigator(context ,HomeScreen(sharedPreferences: widget.sharedPreferences, billLList: [],));
+                        // Navigator.push(context, MaterialPageRoute(builder:(context)
+                        // {return HomeScreen(sharedPreferences: widget.sharedPreferences, billLList: [],);}
+                        // ));
 
                       }
                       if(ind==2){
-                        Navigator.push(context, MaterialPageRoute(builder:(context)
-                        {return Tasfeer(sharedPreferences: widget.sharedPreferences, );}
-                        ));
+                        myNavigator(context ,Tasfeer(sharedPreferences: widget.sharedPreferences, ));
+                        // Navigator.push(context, MaterialPageRoute(builder:(context)
+                        // {return Tasfeer(sharedPreferences: widget.sharedPreferences, );}
+                        // ));
 
                       }
                       if(ind==3){

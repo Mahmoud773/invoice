@@ -19,7 +19,10 @@ import 'package:sqflite/sqlite_api.dart';
 import '../dummy_data/Bill_Model.dart';
 import '../dummy_data/dummy_data.dart';
 import '../dummy_data/file_storage.dart';
+import '../widget/custom_page_route.dart';
 import '../widget/drop_menu.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,6 +36,7 @@ class AddFatoraWithItems extends StatefulWidget {
 }
 
 class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
+
   bool addedPath=false;
   final _formKey = GlobalKey<FormState>();
   final _formKeyDialog = GlobalKey<FormState>();
@@ -224,6 +228,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
       newContent=concatenateMybillsList.toString() ;
 
       // save();
+
       FileStorage.writeCounter(
           newContent, "${billTextModel!.billNumber}.txt").then((value) {
         List<String> list =[];
@@ -234,10 +239,176 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
         billTextModel!.path= value.path;
         myBills.add(billTextModel!);
         save();
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-          return HomeScreen( sharedPreferences: widget.sharedPreferences,
-            backAfterAddBill: true, billLList: [],);
-        }));
+        myNavigatorWithNoreturnToUp(context , HomeScreen( sharedPreferences: widget.sharedPreferences,
+          backAfterAddBill: true, billLList: [],));
+        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
+        //   return HomeScreen( sharedPreferences: widget.sharedPreferences,
+        //     backAfterAddBill: true, billLList: [],);
+        // }));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Colors.blue, width: 2),
+            borderRadius: BorderRadius.circular(24),
+          ),
+          backgroundColor: Colors.blue,
+          duration: Duration(milliseconds: 2000),
+          dismissDirection: DismissDirection.up,
+          content: Text('تم حفظ الفاتورة'
+            , style: TextStyle(color: Colors.white),) ,
+        ));
+      });
+    }
+
+
+  }
+
+  _createTextFile333 ({required Map<String,String> map ,required String name
+    ,  BillTextModel? billTextModel1})  {
+    if(_formKey.currentState!.validate())
+    {
+      _formKey.currentState!.save();
+      List<String> list =[];
+      map.forEach((key, value) { list.add(value);});
+      list.map((e) => {"" :  ""});
+      BillTextModel    billTextModel2=BillTextModel(
+          billType: _enteredBillType,
+          billNumber: _enteredBillNumber,
+          serialMap:itemsList, branchNumber: _enteredBranchNumber);
+
+      _map= {
+        'Bill Type':billTextModel2!.billType.toString() ,
+        'Bill Number':billTextModel2!.billNumber,
+        'Serials':billTextModel2!.serialMap.toString()
+      };
+      var concatenateSerialList = StringBuffer();
+      var  concatenateMybillsList= StringBuffer();
+
+      billTextModel2!.serialMap.forEach((item){
+        concatenateSerialList.write('\n${ item.contains('Item') ?'Item name ${item.substring(6)}' :
+        'serial ${billTextModel2!.serialMap.indexOf(item)+1} : $item \n'}  ');
+        // 'serial ${billTextModel2!.serialMap.indexOf(item)+1} : $item \n');
+      });
+      final String content= 'Bill Type : ${billTextModel2!.billType.toString()}  \n'
+          'Bill Number: ${billTextModel2!.billNumber} \n '
+          'Serials : $concatenateSerialList '  ;
+      var newContent='';
+      //new new
+      billTextModel=BillTextModel(
+          billType: _enteredBillType,
+          billNumber: _enteredBillNumber,
+          serialMap:sanfList1, branchNumber: _enteredBranchNumber);
+      myBills.forEach((element) {
+        if(element.billNumber==billTextModel!.billNumber){
+          billTextModel!.billNumber='${billTextModel!.billNumber}${myBills.length}';
+        }
+      }) ;
+      // myBills.add(billTextModel!);
+      // myBills.forEach((element) {
+      //   element.serialMap.forEach((item){
+      //     concatenateSerialList.write('\n${ item.contains('Item') ?'Item name ${item.substring(6)}' :
+      //     'serial ${element!.serialMap.indexOf(item)+1} : $item \n'}');
+      //     // 'serial ${billTextModel2!.serialMap.indexOf(item)+1} : $item \n');
+      //   });
+      //   var list = ['one', 'two', 'three'];
+      //   var concatenate = StringBuffer();
+      //   list.forEach((item){
+      //     concatenate.write(item);
+      //   });
+      //
+      //   List<StringBuffer> bufferList=[];
+      //
+      //   for(var i=0 ;i<myBills.length;i++){
+      //     bufferList.insert(i, StringBuffer());
+      //     List sanfList=[];
+      //     element.serialMap.forEach((item) {
+      //       // if(item.contains('sanf')){
+      //       //   sanfList.add(item);
+      //       // }
+      //       //
+      //       // print('sanfList $sanfList');
+      //       //         sanfList.forEach((sanf) {
+      //       //           if((sanf.toString() != item.toString()) ){
+      //       //             bool x=(sanf.trim() == item.trim());
+      //       //             print(x);
+      //       //             bufferList[i].write('${element!.branchNumber},${element.billType.toString()},'
+      //       //                 '${element!.billNumber},$sanf, $item \n');
+      //       //
+      //       //           }
+      //       //         }) ;
+      //       //
+      //       //         for(var x=0; x<element.serialMap.length;x++){
+      //       //
+      //       //         }
+      //       if(item.contains('sanf')==false){
+      //         bufferList[i].write('${element!.branchNumber},${element.billType.toString()},'
+      //             '${element!.billNumber}, $item \n');
+      //       }
+      //
+      //       // bufferList[i].write(item.contains('sanf') ?'${item.substring(5)},' : '$item,');
+      //       // bufferList[i].write('$item,');
+      //     });
+      //   }
+      //
+      //
+      //   // concatenateMybillsList.write('Bill Type : ${element.billType.toString()}  \n'
+      //   //     'Bill Number: ${element!.billNumber} \n '
+      //   //     'Branch Number : ${element!.branchNumber} \n'
+      //   //     'Serials : ${element.serialMap.toString()} \n' )  ;
+      //   // concatenateMybillsList.write('$bufferList');
+      //   concatenateMybillsList.write('${bufferList[myBills.indexOf(element)]} \n');
+      //   // concatenateMybillsList.write('${element!.branchNumber},${element.billType.toString()},'
+      //   //     '${element!.billNumber}, ${bufferList[myBills.indexOf(element)]} \n');
+      //   newContent=concatenateMybillsList.toString() ;
+      // });
+      //new new
+
+      List<StringBuffer> bufferList=[];
+      for(var i=0;i<billTextModel!.serialMap.length;i++){
+        bufferList.insert(i, StringBuffer());
+
+      }
+      //new new
+      if(billTextModel!.serialMap.isNotEmpty){
+        billTextModel!.serialMap.forEach((element) {
+          if(element.contains('sanf')==false){
+            bufferList[billTextModel!.serialMap.indexOf(element)].
+            write('${billTextModel!.branchNumber},'
+                '${billTextModel!.billType.toString()},'
+                '${billTextModel!.billNumber}, $element \n');
+          }
+          concatenateMybillsList.write('${bufferList[billTextModel!.serialMap.indexOf(element)]} ');
+
+        });
+      }
+      if(billTextModel!.serialMap.isEmpty){
+        concatenateMybillsList.write('${billTextModel!.branchNumber},'
+            '${billTextModel!.billType.toString()},'
+            '${billTextModel!.billNumber} \n');
+      }
+
+
+
+      // concatenateMybillsList.write('${element!.branchNumber},${element.billType.toString()},'
+      //     '${element!.billNumber}, ${bufferList[myBills.indexOf(element)]} \n');
+      newContent=concatenateMybillsList.toString() ;
+
+      // save();
+      FileStorage.writeCounter(
+          newContent, "${billTextModel!.billNumber}.txt").then((value) {
+        List<String> list =[];
+        map.forEach((key, value) { list.add(value);});
+        list.map((e) => {"" :  ""});
+
+        widget.sharedPreferences!.setString('lastPath', value.path);
+        billTextModel!.path= value.path;
+        myBills.add(billTextModel!);
+        save();
+
+        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
+        //   return HomeScreen( sharedPreferences: widget.sharedPreferences,
+        //     backAfterAddBill: true, billLList: [],);
+        // }));
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
@@ -317,7 +488,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
 
   List<String>   sanfList1=[];
 
-  Map<String,int> sanfMap={};
+  Map<String,dynamic> sanfMap={};
 
   Future<void> scanBarCodeNormal() async{
     String barcodeScanRes ;
@@ -369,7 +540,9 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
             ),
           ),
           actions: [
-            TextButton(onPressed: (){
+            TextButton(
+                onPressed: (){
+              print('sanf map ${sanfMap}');
               // _createTextFile(map: map , name: '$enteredfileName'
               //     , billTextModel1:  billTextModel);
               // List<String> list1 =[];
@@ -377,7 +550,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
               // list1.map((e) => {"" :  ""});
               _createTextFile2(map: serialMap ,name: '$enteredfileName');
 
-            },
+            } ,
                 child: Text('حفظ' ,style:
                 TextStyle(color: Colors.white , fontWeight: FontWeight.bold ,
                     fontSize: 20),))
@@ -581,6 +754,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                            child: SingleChildScrollView(
                                              child: Column(
                                                crossAxisAlignment: CrossAxisAlignment.end,
+                                               mainAxisAlignment: MainAxisAlignment.center,
                                                children: [
                                                  AlertDialog(
 
@@ -677,53 +851,58 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                                      child: Column(
                                                        crossAxisAlignment: CrossAxisAlignment.end,
                                                        children: [
-                                                         Container(
+                                                         Center(
+                                                           child: Container(
 
-                                                           margin: EdgeInsets.only(right: 20),
-                                                           width: width*45/100,
-                                                           child: Directionality(
-                                                             textDirection: TextDirection.rtl,
-                                                             child: TextFormField(
-                                                               //  autofocus: true,
-                                                               // onFieldSubmitted: (v){
-                                                               //   FocusScope.of(context).requestFocus(focusDialog);
-                                                               // },
-                                                               textInputAction: TextInputAction.next,
-                                                               focusNode: focusSerialNumber,
-                                                               // autofocus: true,
-                                                               // focusNode: focusListDialog[noOfSerials1-1],
-                                                               decoration: InputDecoration(
-                                                                 focusedBorder: OutlineInputBorder(
-                                                                   borderSide:
-                                                                   BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
-                                                                   borderRadius: BorderRadius.circular(50.0),
-                                                                 ),
-                                                                 filled: true,
-                                                                 alignLabelWithHint: false,
-                                                                 label: Text('عدد السيريال',
-                                                                   style: TextStyle(fontWeight: FontWeight.bold ,color:
-                                                                   Colors.black), textAlign: TextAlign.right,),
-                                                                 fillColor: Colors.black.withOpacity(0.1),
-                                                                 enabledBorder: OutlineInputBorder(
-                                                                   borderSide:
-                                                                   BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
-                                                                   borderRadius: BorderRadius.circular(50.0),
+                                                             margin: EdgeInsets.only(bottom: 10),
+                                                             width: width*60/100,
+                                                             child: Directionality(
+                                                               textDirection: TextDirection.rtl,
+                                                               child: Container(
+                                                                 // width:width*45/100,
+                                                                 child: TextFormField(
+                                                                   //  autofocus: true,
+                                                                   // onFieldSubmitted: (v){
+                                                                   //   FocusScope.of(context).requestFocus(focusDialog);
+                                                                   // },
+                                                                   textInputAction: TextInputAction.next,
+                                                                   focusNode: focusSerialNumber,
+                                                                   // autofocus: true,
+                                                                   // focusNode: focusListDialog[noOfSerials1-1],
+                                                                   decoration: InputDecoration(
+                                                                     focusedBorder: OutlineInputBorder(
+                                                                       borderSide:
+                                                                       BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
+                                                                       borderRadius: BorderRadius.circular(50.0),
+                                                                     ),
+                                                                     filled: true,
+                                                                     alignLabelWithHint: false,
+                                                                     label: Text('عدد السيريال',
+                                                                       style: TextStyle(fontWeight: FontWeight.bold ,color:
+                                                                       Colors.black), textAlign: TextAlign.right,),
+                                                                     fillColor: Colors.black.withOpacity(0.1),
+                                                                     enabledBorder: OutlineInputBorder(
+                                                                       borderSide:
+                                                                       BorderSide(width: 3, color: Colors.transparent ), //<-- SEE HERE
+                                                                       borderRadius: BorderRadius.circular(50.0),
+                                                                     ),
+                                                                   ),
+                                                                   onChanged: (value){
+                                                                     noOfSerials1=int.parse(value);
+                                                                     sanfMap[sanfName]= int.parse(value);
+
+                                                                     for(var i=0 ; i <noOfSerials1 ;i++){
+                                                                       focusListDialog.insert(i, FocusNode());
+                                                                       scannerList.insert(i, '');
+                                                                        scannerTextEditControllerList.insert(i, TextEditingController());
+                                                                       scannerTextEditControllerList[i].text='';
+                                                                     }
+                                                                     setState(() {
+
+                                                                     });
+                                                                   },
                                                                  ),
                                                                ),
-                                                               onChanged: (value){
-                                                                 noOfSerials1=int.parse(value);
-                                                                 sanfMap[sanfName]= int.parse(value);
-
-                                                                 for(var i=0 ; i <noOfSerials1 ;i++){
-                                                                   focusListDialog.insert(i, FocusNode());
-                                                                   scannerList.insert(i, '');
-                                                                    scannerTextEditControllerList.insert(i, TextEditingController());
-                                                                   scannerTextEditControllerList[i].text='';
-                                                                 }
-                                                                 setState(() {
-
-                                                                 });
-                                                               },
                                                              ),
                                                            ),
                                                          ),
@@ -931,6 +1110,7 @@ class _AddFatoraWithItemsState extends State<AddFatoraWithItems> {
                                                      TextButton(onPressed:() {
                                                        if(_formKeyDialog.currentState!.validate()){
                                                          _formKeyDialog.currentState!.save();
+                                                         sanfMap[sanfName]=itemsList;
                                                          scannerList=[];
                                                          scannerTextEditControllerList=[];
                                                          noOfSerials1=0;
